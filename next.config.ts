@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
+  output: "standalone",
+  assetPrefix:
+    process.env.NODE_ENV === "production"
+      ? "https://almanacresearch.com"
+      : undefined,
 };
 
 export default nextConfig;
