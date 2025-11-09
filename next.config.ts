@@ -3,7 +3,6 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: "standalone",
-
   // Redirect non-www requests to the www domain
   async redirects() {
     return [
