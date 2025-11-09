@@ -1,6 +1,6 @@
 import { Button } from "../ui/button";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { Input } from "../ui/input";
 
 export function Hero() {
@@ -170,7 +170,9 @@ export function Hero() {
                       name="email"
                       placeholder="Enter your email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e: {
+                        target: { value: SetStateAction<string> };
+                      }) => setEmail(e.target.value)}
                       className="h-14 px-6 rounded-4xl border-2 transition-all duration-300  lg:w-2/3"
                       style={{
                         backgroundColor: "rgba(227, 226, 226, 0.95)",
