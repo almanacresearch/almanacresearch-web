@@ -22,20 +22,20 @@ export function Nav() {
                 onMouseLeave={() => setIsResourcesOpen(false)}
               >
                 Resources
-                <svg
+                <motion.svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-4 w-4 transition-transform group-hover:rotate-180"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path
+                  <motion.path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
                     d="M19 9l-7 7-7-7"
                   />
-                </svg>
+                </motion.svg>
               </button>
 
               {/* Dropdown menu */}
@@ -120,7 +120,7 @@ export function Nav() {
                     animate={{ rotate: isMobileResourcesOpen ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <path
+                    <motion.path
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
