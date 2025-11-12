@@ -6,46 +6,8 @@ import { NextResponse } from "next/server";
 
 dotenv.config({ path: ".env.local" });
 
-export async function POST(req: Request) {
-  try {
-    // parse request body
-    const { email } = await req.json();
-
-    if (!email) {
-      return NextResponse.json({ message: "Email required" }, { status: 400 });
-    }
-
-    const token = crypto.randomBytes(32).toString("hex");
-
-    // Store user with verification token
-    const { error } = await supabase
-      .from("users")
-      .insert([{ email, verify_token: token }]);
-
-    if (error) {
-      console.error(error);
-      return NextResponse.json({ message: "Database error" }, { status: 500 });
-    }
-
-    // Configure Zoho Mail transporter
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: true,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-    await transporter.verify();
-
-    const verifyLink = `${process.env.NEXT_PUBLIC_BASE_URL}/api/verify-email?token=${token}`;
-
-    await transporter.sendMail({
-      from: `"Almanac Research" <${process.env.SMTP_USER}>`,
-      to: email,
-      subject: "Confirm your email for AlmanacAI Beta Access",
-      html: `
+function emailHTML(verifyLink: string) {
+  return `
   <div style="margin:0;padding:0;background-color:#0c0c0c;color:#eaeaea;font-family:'Inter',Arial,sans-serif;">
     <div style="max-width:600px;margin:auto;background-color:#141414;border-radius:16px;padding:40px 30px;border:1px solid #2a2a2a;">
 
@@ -90,10 +52,99 @@ export async function POST(req: Request) {
       </p>
     </div>
   </div>
-  `,
+`;
+}
+
+export async function POST(req: Request) {
+  try {
+    // parse request body
+    const { email } = await req.json();
+
+    if (!email) {
+      return NextResponse.json({ message: "Email required" }, { status: 400 });
+    }
+
+    // Check if email already exists
+    const { data: existingUser, error: fetchError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", email)
+      .single();
+
+    if (fetchError && fetchError.code !== "PGRST116") throw fetchError;
+
+    // Case 1: Email already verified
+    if (existingUser && existingUser.verified) {
+      return NextResponse.json({
+        status: 200,
+        message: "Email already verified. Thanks for registering!",
+      });
+    }
+
+    // Configure Mail transporter
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+    await transporter.verify();
+
+    const token = crypto.randomBytes(32).toString("hex");
+    const verifyLink = `${process.env.NEXT_PUBLIC_BASE_URL}/api/verify-email?token=${token}`;
+
+    // Case 2: Resend verification if unverified email exists
+    if (existingUser && !existingUser.verified) {
+      const { error } = await supabase
+        .from("users")
+        .update({ verify_token: token })
+        .eq("email", email);
+
+      if (error) {
+        console.error(error);
+        return NextResponse.json(
+          { message: "Database error" },
+          { status: 500 }
+        );
+      }
+
+      await transporter.sendMail({
+        from: `"Almanac Research" <${process.env.SMTP_USER}>`,
+        to: email,
+        subject: "Confirm your email for AlmanacAI Beta Access",
+        html: emailHTML(verifyLink),
+      });
+
+      return NextResponse.json({
+        status: "resent",
+        message: "Verification email resent. Please check your inbox.",
+      });
+    }
+
+    // Case 3: New user
+    const { error } = await supabase
+      .from("users")
+      .insert([{ email, verify_token: token }]);
+
+    if (error) {
+      console.error(error);
+      return NextResponse.json({ message: "Database error" }, { status: 500 });
+    }
+
+    await transporter.sendMail({
+      from: `"Almanac Research" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: "Confirm your email for AlmanacAI Beta Access",
+      html: emailHTML(verifyLink),
     });
 
-    return NextResponse.json({ message: "Verification email sent!" });
+    return NextResponse.json({
+      message:
+        "Thank you for registering. Please check your inbox and verify the mail to secure your access to AlmanacAI.",
+    });
   } catch (error) {
     console.error("Error in /api/register:", error);
     return NextResponse.json(
