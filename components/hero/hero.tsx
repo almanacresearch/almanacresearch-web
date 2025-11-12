@@ -5,8 +5,9 @@ import { Input } from "../ui/input";
 
 export function Hero() {
   const [email, setEmail] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,7 +35,10 @@ export function Hero() {
 
       const data = await res.json();
 
-      setIsSubmitted(true);
+      setShowPopup(true);
+      setPopupMessage(data.message || "Thank you for registering.");
+      setTimeout(() => setShowPopup(false), 5000);
+      setEmail("");
     } catch (error) {
       console.error("Error submitting email:", error);
       alert("Failed to submit email. Please try again after some time.");
@@ -144,95 +148,85 @@ export function Hero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="space-y-1">
+            <div className="space-y-1 pb-6">
               <p className="text-3xl lg:text-4xl font-bold text-stone-300">
                 introducing
               </p>
               <h1 className="text-6xl lg:text-7xl font-bold text-stone-100">
                 AlmanacAI
               </h1>
+              <p className="text-lg lg:text-xl text-amber-50/80">
+                <i>Powering your high-performance life.</i>
+              </p>
             </div>
 
-            {!isSubmitted ? (
-              <>
-                <p className="text-lg lg:text-xl text-amber-50/80">
-                  Be among the first to experience the future of intelligent
-                  productivity.
-                </p>
-                <p className="text-lg lg:text-xl text-amber-50/80">
-                  Join the beta, launching - <b> March 1, 2026</b> — and get
-                  lifetime free access to AlmanacAI.
-                </p>
-                <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-                  <div className="flex flex-col sm:flex-row gap-3 items-center">
-                    <Input
-                      type="email"
-                      name="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e: {
-                        target: { value: SetStateAction<string> };
-                      }) => setEmail(e.target.value)}
-                      className="h-14 px-6 rounded-4xl border-2 transition-all duration-300  lg:w-2/3"
-                      style={{
-                        backgroundColor: "rgba(227, 226, 226, 0.95)",
-                        borderColor: "#A0725D",
-                        color: "#57534e",
-                        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                      }}
-                      required
-                    />
-                    <Button
-                      type="submit"
-                      disabled={isLoading}
-                      className="rounded-4xl px-10 h-14 whitespace-nowrap transition-all duration-300 border-2 border-stone-200/20 hover:scale-105"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #78523E 0%, #92664F 50%, #A0725D 100%)",
-                        boxShadow:
-                          "0 6px 24px rgba(120, 82, 62, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-                        color: "#FAF9F7",
-                        opacity: isLoading ? 0.7 : 1,
-                      }}
-                    >
-                      {isLoading ? "Submitting..." : "Join the Beta"}
-                    </Button>
-                  </div>
-                </form>
-                <div className="text-center sm:text-left">
-                  <a
-                    href="#enterprise"
-                    className="inline-flex items-center transition-colors group"
-                    style={{ color: "#ac5d5dff" }}
-                  >
-                    <span className="hover:underline">
-                      Enterprise? Register here →
-                    </span>
-                  </a>
-                </div>
-              </>
-            ) : (
-              <motion.div
-                className="pt-10 text-center font-semibold tracking-wide"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
+            <p className="text-lg lg:text-xl text-amber-50/80">
+              Join the beta, launching - <b> March 1, 2026</b> — and get
+              lifetime free access to AlmanacAI.
+            </p>
+            <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 items-center">
+                <Input
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e: {
+                    target: { value: SetStateAction<string> };
+                  }) => setEmail(e.target.value)}
+                  className="h-14 px-6 rounded-4xl border-2 transition-all duration-300  lg:w-2/3"
+                  style={{
+                    backgroundColor: "rgba(227, 226, 226, 0.95)",
+                    borderColor: "#A0725D",
+                    color: "#57534e",
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                  }}
+                  required
+                />
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="rounded-4xl px-10 h-14 whitespace-nowrap transition-all duration-300 border-2 border-amber-200/30 hover:scale-105"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(120, 78, 30, 0.9) 0%, rgba(139, 83, 36, 0.9) 50%, rgba(160, 103, 50, 0.9) 100%)",
+                    boxShadow:
+                      "0 6px 24px rgba(139, 83, 36, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+                    color: "#FAF9F6",
+                    opacity: isLoading ? 0.7 : 1,
+                  }}
+                >
+                  {isLoading ? "Submitting..." : "Join the Beta"}
+                </Button>
+              </div>
+            </form>
+            <div className="text-center sm:text-left">
+              <a
+                href="#enterprise"
+                className="inline-flex items-center transition-colors group"
+                style={{ color: "#ac5d5dff" }}
               >
-                <h3 className="text-3xl sm:text-4xl bg-gradient-to-r from-[#F5E6C5] via-[#EAD7B7] to-[#D8C3A5] bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(245,230,197,0.4)]">
-                  Thank you for registering!
-                </h3>
-                <p className="mt-2 text-lg sm:text-xl text-[#F3E5AB]">
-                  🚀 AlmanacAI Beta launching <b>March 1, 2026</b>
-                </p>
-                <p className="mt-3 text-lg sm:text-xl text-[#E6D5A9]">
-                  Please check your inbox and confirm your email and be among
-                  the first to experience a new phase of intelligent
-                  productivity.
-                </p>
-              </motion.div>
-            )}
+                <span className="hover:underline">
+                  Enterprise? Register here →
+                </span>
+              </a>
+            </div>
           </motion.div>
         </div>
+        {showPopup && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed bottom-9 left-1/2 -translate-x-1/2 bg-amber-900/70 backdrop-blur-lg text-stone-100 border border-amber-200/30 shadow-2xl rounded-2xl px-6 py-3 text-center text-sm sm:text-base font-medium z-[999]"
+          >
+            <p
+              className="text-base text-amber-50/80 mt-2"
+              dangerouslySetInnerHTML={{ __html: popupMessage }}
+            ></p>
+          </motion.div>
+        )}
       </div>
     </section>
   );

@@ -1,16 +1,19 @@
 "use client";
 
-import { useState, FormEvent, SetStateAction } from "react";
+import { useState, SetStateAction } from "react";
 import { Hero } from "@/components/hero/hero";
 import { Nav } from "@/components/nav/nav";
 import { Footer } from "@/components/footer/footer";
 import { motion } from "motion/react";
 import { Brain, Zap, Lock } from "lucide-react";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 
 export default function Home() {
   const [email, setEmail] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,7 +41,10 @@ export default function Home() {
 
       const data = await res.json();
 
-      setIsSubmitted(true);
+      setShowPopup(true);
+      setPopupMessage(data.message || "Thank you for registering.");
+      setTimeout(() => setShowPopup(false), 5000);
+      setEmail("");
     } catch (error) {
       console.error("Error submitting email:", error);
       alert("Failed to submit email. Please try again after some time.");
@@ -617,7 +623,7 @@ export default function Home() {
               <div className="space-y-4 text-lg text-stone-600 leading-relaxed">
                 <p>The more you use it, the smarter it becomes.</p>
                 <p>
-                  AlmanacAI observes your habits — like when you check investing
+                  AlmanacAI observes your habits. When do you check investing
                   apps, reply to messages, or prefer deep work — and reorders
                   your tasks to match your natural flow.
                 </p>
@@ -650,7 +656,7 @@ export default function Home() {
                 </h3>
               </div>
               <div className="space-y-4 text-lg text-stone-600 leading-relaxed">
-                <p>You stay in control. Always.</p>
+                <p>Perhaps the most important one. YOU CONTROL. ALWAYS.</p>
                 <p>
                   The <span className="text-stone-900">Monitor Dashboard</span>{" "}
                   shows exactly what AlmanacAI is tracking — from emails to
@@ -734,88 +740,85 @@ export default function Home() {
           </div>
 
           {/* CTA Section */}
-          {!isSubmitted ? (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false }}
-              transition={{ duration: 0.6 }}
-              className="text-center mt-32 pt-16 border-t border-stone-200"
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false }}
+            transition={{ duration: 0.6 }}
+            className="text-center mt-32 pt-16 border-t border-stone-200"
+          >
+            <h3
+              className="text-2xl lg:text-3xl mb-6"
+              style={{ color: "#78523E" }}
             >
-              <h3
-                className="text-2xl lg:text-3xl mb-6"
-                style={{ color: "#78523E" }}
-              >
-                <i>And yet, it's simply a to-do list</i>. 😉
-              </h3>
+              <i>And yet, it's simply a to-do list</i>. 😉
+            </h3>
 
-              <div className="max-w-xl mx-auto">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="flex flex-col sm:flex-row gap-3 items-center">
-                    <input
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e: {
-                        target: { value: SetStateAction<string> };
-                      }) => setEmail(e.target.value)}
-                      className="w-full sm:flex-1 h-14 px-6 rounded-4xl border-2 transition-all duration-300 outline-none focus:ring-2 focus:ring-offset-2"
-                      style={{
-                        backgroundColor: "rgba(245, 245, 244, 0.95)",
-                        borderColor: "#A0725D",
-                        color: "#57534e",
-                        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                      }}
-                      required
-                    />
-                    <button
-                      type="submit"
-                      className="rounded-4xl px-10 h-14 whitespace-nowrap transition-all duration-300 border-2 border-stone-200/20 hover:scale-105"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #78523E 0%, #92664F 50%, #A0725D 100%)",
-                        boxShadow:
-                          "0 6px 24px rgba(120, 82, 62, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-                        color: "#FAF9F7",
-                      }}
-                    >
-                      Join the Beta
-                    </button>
-                  </div>
-                </form>
-              </div>
-              <div className="mt-4">
-                <a
-                  href="#enterprise"
-                  className="inline-flex items-center transition-colors group"
-                  style={{ color: "#E57373" }}
-                >
-                  <span className="hover:underline">
-                    Enterprise? Register here →
-                  </span>
-                </a>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              className="pt-10 text-center font-semibold tracking-wide"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-              <h3 className="text-3xl sm:text-4xl bg-gradient-to-r from-green-900 via-amber-800 to-lime-900 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(45,35,20,0.5)]">
-                Thank you for registering!
-              </h3>
-              <p className="mt-2 text-lg sm:text-xl text-[#2e3b2f]">
-                🚀 AlmanacAI Beta launching <b>March 1, 2026</b>
-              </p>
-              <p className="mt-3 text-lg sm:text-xl text-[#3b2f2a]">
-                Please check your inbox and confirm your email and be among the
-                first to experience a new phase of intelligent productivity.
-              </p>
-            </motion.div>
-          )}
+            <div className="max-w-xl mx-auto">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="flex flex-col sm:flex-row gap-3 items-center">
+                  <Input
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e: {
+                      target: { value: SetStateAction<string> };
+                    }) => setEmail(e.target.value)}
+                    className="w-full sm:flex-1 h-14 px-6 rounded-4xl border-2 transition-all duration-300 outline-none focus:ring-2 focus:ring-offset-2"
+                    style={{
+                      backgroundColor: "rgba(245, 245, 244, 0.95)",
+                      borderColor: "#A0725D",
+                      color: "#57534e",
+                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                    }}
+                    required
+                  />
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="rounded-4xl px-10 h-14 whitespace-nowrap transition-all duration-300 border-2 border-stone-200/30 hover:scale-105"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #78523E 0%, #92664F 50%, #A0725D 100%)",
+                      boxShadow:
+                        "0 6px 24px rgba(120, 82, 62, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+                      color: "#FAF9F7",
+                      opacity: isLoading ? 0.7 : 1,
+                    }}
+                  >
+                    {isLoading ? "Submitting..." : "Join the Beta"}
+                  </Button>
+                </div>
+              </form>
+            </div>
+            <div className="mt-4">
+              <a
+                href="#enterprise"
+                className="inline-flex items-center transition-colors group"
+                style={{ color: "#E57373" }}
+              >
+                <span className="hover:underline">
+                  Enterprise? Register here →
+                </span>
+              </a>
+            </div>
+          </motion.div>
         </div>
+        {showPopup && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed bottom-9 left-1/2 -translate-x-1/2 bg-amber-900/70 backdrop-blur-lg text-stone-100 border border-amber-200/30 shadow-2xl rounded-2xl px-6 py-3 text-center text-sm sm:text-base font-medium z-[999]"
+          >
+            <p
+              className="text-base text-amber-50/80 mt-2"
+              dangerouslySetInnerHTML={{ __html: popupMessage }}
+            ></p>
+          </motion.div>
+        )}
       </section>
 
       {/* About Us Section */}
