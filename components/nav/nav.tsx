@@ -1,15 +1,38 @@
 import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { colors } from "@/lib/constants/theme";
 
 export function Nav() {
+  const menuRef = useRef<HTMLDivElement>(null);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isResourcesOpen, setIsResourcesOpen] = useState(false);
   const [isMobileResourcesOpen, setIsMobileResourcesOpen] = useState(false);
 
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent | TouchEvent) {
+      if (!menuRef.current) return;
+
+      if (!menuRef.current.contains(e.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [isMenuOpen]);
   return (
     <>
-      <nav className="flex justify-between items-center px-10 py-4 border-neutral-200 bg-[#f0e2cb]/50 backdrop-blur-md sticky top-0 z-50">
+      <nav
+        className="flex justify-between items-center px-10 py-4 border-neutral-200 backdrop-blur-md sticky top-0 z-50"
+        style={{ backgroundColor: `${colors.background.cream}80` }}
+      >
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-12">
           <h1 className="text-xl font-bold text-amber-900">ALMANAC RESEARCH</h1>
@@ -41,35 +64,35 @@ export function Nav() {
               {/* Dropdown menu */}
               {isResourcesOpen && (
                 <div
-                  className="absolute left-0 z-10 bg-white border border-neutral-200 rounded-lg shadow-md mt-0 w-48"
+                  className="absolute left-0 z-10 bg-white border border-neutral-200 rounded-lg shadow-md mt-0 w-48 overflow-hidden"
                   onMouseEnter={() => setIsResourcesOpen(true)}
                   onMouseLeave={() => setIsResourcesOpen(false)}
                 >
                   <a
-                    href="#blog"
+                    href="/blog"
                     className="block px-4 py-2 hover:bg-neutral-50 hover:text-amber-900"
                   >
                     Blog
                   </a>
                   <a
-                    href="#agent-store"
+                    href="/coming-soon?title=Pricing&description=We're finalizing our pricing plans to offer the best value for individuals and teams. Check back soon!"
                     className="block px-4 py-2 hover:bg-neutral-50 hover:text-amber-900"
                   >
-                    Agent Store
+                    Pricing
                   </a>
                   <a
-                    href="#contact"
+                    href="/enterprise"
                     className="block px-4 py-2 hover:bg-neutral-50 hover:text-amber-900"
                   >
-                    Contact Us
+                    Enterprise
                   </a>
                 </div>
               )}
             </div>
-            <a href="#enterprise" className="hover:text-amber-900 transition">
-              Enterprise
+            <a href="/about" className="hover:text-amber-900 transition">
+              About Us
             </a>
-            <a href="#careers" className="hover:text-amber-900 transition">
+            <a href="/careers" className="hover:text-amber-900 transition">
               We're Hiring!
             </a>
           </div>
@@ -95,7 +118,12 @@ export function Nav() {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            className="md:hidden bg-[#f0e2cb]/95 backdrop-blur-md border-b border-neutral-200 overflow-hidden"
+            ref={menuRef}
+            className="md:hidden fixed left-0 right-0 z-40 backdrop-blur-md border-b border-neutral-200 overflow-hidden"
+            style={{
+              top: "60px",
+              backgroundColor: `${colors.background.cream}F2`,
+            }}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -138,22 +166,22 @@ export function Nav() {
                       transition={{ duration: 0.2, ease: "easeInOut" }}
                     >
                       <a
-                        href="#blog"
+                        href="/blog"
                         className="block py-2 text-neutral-700 hover:text-amber-900"
                       >
                         Blog
                       </a>
                       <a
-                        href="#agent-store"
+                        href="/coming-soon?title=Pricing&description=We're finalizing our pricing plans to offer the best value for individuals and teams. Check back soon!"
                         className="block py-2 text-neutral-700 hover:text-amber-900"
                       >
-                        Agent Store
+                        Pricing
                       </a>
                       <a
-                        href="#contact"
+                        href="/enterprise"
                         className="block py-2 text-neutral-700 hover:text-amber-900"
                       >
-                        Contact Us
+                        Enterprise
                       </a>
                     </motion.div>
                   )}
@@ -161,13 +189,13 @@ export function Nav() {
               </div>
 
               <a
-                href="#enterprise"
+                href="/about"
                 className="hover:text-amber-900 transition font-medium"
               >
-                Enterprise
+                About Us
               </a>
               <a
-                href="#careers"
+                href="/careers"
                 className="hover:text-amber-900 transition font-medium"
               >
                 We're Hiring!

@@ -19,12 +19,11 @@ function emailHTML(verifyLink: string) {
       <!-- Heading -->
       <div style="text-align:center;">
         <h2 style="color:#f2f2f2;font-size:20px;margin-bottom:16px;">
-          Confirm your email to join the AlmanacAI Beta
+          Confirm your email to join the AlmanacAI Waitlist
         </h2>
         <p style="color:#bdbdbd;font-size:15px;line-height:1.6;margin-bottom:36px;">
-          You’re moments away from joining the <b>future of intelligent productivity</b> — 
-          where technology works with you, not against you.  
-          Please verify your email to activate your early access.
+          You’re one step away to secure premium access to <b>AlmanacAI</b>.
+          Please confirm your email to complete your registration.
         </p>
 
         <!-- Verify Button -->
@@ -48,7 +47,7 @@ function emailHTML(verifyLink: string) {
       <hr style="border:none;border-top:1px solid #2a2a2a;margin:40px 0;">
       <p style="font-size:12px;color:#777;text-align:center;line-height:1.6;margin:0;">
         © ${new Date().getFullYear()} Almanac Research. All rights reserved.<br>
-        You’re receiving this email because you registered for early access to AlmanacAI Beta.
+        You’re receiving this email because you registered for AlmanacAI.
       </p>
     </div>
   </div>
@@ -114,7 +113,7 @@ export async function POST(req: Request) {
       await transporter.sendMail({
         from: `"Almanac Research" <${process.env.SMTP_USER}>`,
         to: email,
-        subject: "Confirm your email for AlmanacAI Beta Access",
+        subject: "Confirm your email to join AlmanacAI waitlist",
         html: emailHTML(verifyLink),
       });
 
@@ -137,7 +136,7 @@ export async function POST(req: Request) {
     await transporter.sendMail({
       from: `"Almanac Research" <${process.env.SMTP_USER}>`,
       to: email,
-      subject: "Confirm your email for AlmanacAI Beta Access",
+      subject: "Confirm your email to join AlmanacAI waitlist",
       html: emailHTML(verifyLink),
     });
 
@@ -146,7 +145,7 @@ export async function POST(req: Request) {
         "Thank you for registering. Please check your inbox and verify the mail to secure your access to AlmanacAI.",
     });
   } catch (error) {
-    console.error("Error in /api/register:", error);
+    console.error("Error in /api/register-prelaunch:", error);
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: 500 }

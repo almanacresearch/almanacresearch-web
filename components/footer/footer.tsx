@@ -1,4 +1,5 @@
-import { FaLinkedin, FaInstagram, FaTwitter } from "react-icons/fa";
+import { FaLinkedin, FaXTwitter } from "react-icons/fa6";
+import { colors } from "@/lib/constants/theme";
 
 export function Footer() {
   return (
@@ -6,20 +7,20 @@ export function Footer() {
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center sm:items-start text-center sm:text-left gap-4">
         <div>
           <h4 className="font-bold text-lg">ALMANAC RESEARCH</h4>
-          <p className="text-sm text-neutral-200">
+          <p className="text-sm" style={{ color: colors.background.offWhite }}>
             © 2025 Almanac Research. All rights reserved.
           </p>
         </div>
 
         <div className="flex flex-col items-end sm:items-end text-sm">
           <div className="flex flex-wrap justify-center sm:justify-end  gap-4 mb-3">
-            <a href="#privacy-policy" className="hover:underline">
+            <a href="/privacy-policy" className="hover:underline">
               Privacy Policy
             </a>
-            <a href="#terms" className="hover:underline">
+            <a href="/terms-of-service" className="hover:underline">
               Terms
             </a>
-            <a href="#contact" className="hover:underline">
+            <a href="/about#contact" className="hover:underline">
               Contact
             </a>
           </div>
@@ -33,20 +34,12 @@ export function Footer() {
               <FaLinkedin size={20} />
             </a>
             <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:opacity-80 transition"
-            >
-              <FaInstagram size={20} />
-            </a>
-            <a
               href="https://x.com/almanacAIhq"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:opacity-80 transition"
             >
-              <FaTwitter size={20} />
+              <FaXTwitter size={20} />
             </a>
           </div>
         </div>
