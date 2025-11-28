@@ -22,7 +22,7 @@ function emailHTML(verifyLink: string) {
           Confirm your email to join the AlmanacAI Waitlist
         </h2>
         <p style="color:#bdbdbd;font-size:15px;line-height:1.6;margin-bottom:36px;">
-          You’re one step away to confirm premium access to <b>AlmanacAI</b>.
+          You’re one step away to secure premium access to <b>AlmanacAI</b>.
           Please confirm your email to complete your registration.
         </p>
 
@@ -113,7 +113,7 @@ export async function POST(req: Request) {
       await transporter.sendMail({
         from: `"Almanac Research" <${process.env.SMTP_USER}>`,
         to: email,
-        subject: "Confirm your email for AlmanacAI Beta Access",
+        subject: "Confirm your email to join AlmanacAI waitlist",
         html: emailHTML(verifyLink),
       });
 
@@ -136,7 +136,7 @@ export async function POST(req: Request) {
     await transporter.sendMail({
       from: `"Almanac Research" <${process.env.SMTP_USER}>`,
       to: email,
-      subject: "Confirm your email for AlmanacAI Beta Access",
+      subject: "Confirm your email to join AlmanacAI waitlist",
       html: emailHTML(verifyLink),
     });
 

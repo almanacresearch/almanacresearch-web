@@ -12,7 +12,7 @@ export default function AboutUs() {
       className="min-h-screen"
       style={{ backgroundColor: colors.background.offWhite }}
     >
-      {/* Hero Section - Gradient with floating elements */}
+      {/* Hero Section */}
       <section className="relative py-20 lg:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <AnimatedBackground variant="simple" />
 

@@ -42,11 +42,11 @@ export function Hero() {
             </div>
 
             <p className="text-lg lg:text-xl text-amber-50/80">
-              Join the beta, launching -<b> March 1, 2026.</b>
+              Join the waitlist, launching -<b> March 1, 2026</b>
             </p>
             <p className="text-amber-50/80">
               Be part of the founding cohort shaping AlmanacAI's future with
-              <b> premium access</b>, permanently unlocked.
+              <b> premium access</b>, permanently unlocked
             </p>
             <EmailRegistrationForm />
           </motion.div>
