@@ -1,13 +1,32 @@
 import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { colors } from "@/lib/constants/theme";
 
 export function Nav() {
+  const menuRef = useRef<HTMLDivElement>(null);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isResourcesOpen, setIsResourcesOpen] = useState(false);
   const [isMobileResourcesOpen, setIsMobileResourcesOpen] = useState(false);
 
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent | TouchEvent) {
+      if (!menuRef.current) return;
+
+      if (!menuRef.current.contains(e.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [isMenuOpen]);
   return (
     <>
       <nav
@@ -99,8 +118,12 @@ export function Nav() {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            className="md:hidden backdrop-blur-md border-b border-neutral-200 overflow-hidden"
-            style={{ backgroundColor: `${colors.background.cream}F2` }}
+            ref={menuRef}
+            className="md:hidden fixed left-0 right-0 z-40 backdrop-blur-md border-b border-neutral-200 overflow-hidden"
+            style={{
+              top: "60px",
+              backgroundColor: `${colors.background.cream}F2`,
+            }}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
