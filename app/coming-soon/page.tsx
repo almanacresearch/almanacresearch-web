@@ -67,7 +67,10 @@ function ComingSoonContent() {
             >
               Coming Soon
             </p>
-            <p className="text-xl max-w-2xl mx-auto mb-12" style={{ color: colors.stone[600] }}>
+            <p
+              className="text-xl max-w-2xl mx-auto mb-12"
+              style={{ color: colors.stone[700] }}
+            >
               {description}
             </p>
           </motion.div>

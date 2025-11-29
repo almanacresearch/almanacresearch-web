@@ -23,7 +23,13 @@ import {
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: colors.background.offWhite, color: colors.stone[900] }}>
+    <div
+      className="min-h-screen flex flex-col"
+      style={{
+        backgroundColor: colors.background.offWhite,
+        color: colors.stone[900],
+      }}
+    >
       {/* Navigation */}
       <Nav />
 
@@ -89,7 +95,10 @@ export default function Home() {
                 that sits on top of every application you use.
               </h2>
 
-              <p className="text-lg lg:text-xl max-w-4xl mx-auto leading-relaxed" style={{ color: colors.stone[700] }}>
+              <p
+                className="text-lg lg:text-xl max-w-4xl mx-auto leading-relaxed"
+                style={{ color: colors.stone[700] }}
+              >
                 It becomes the{" "}
                 <span style={{ color: colors.stone[900] }}>
                   invisible infrastructure of a high-performance life
@@ -97,10 +106,16 @@ export default function Home() {
                 , the background intelligence behind every great performer.
               </p>
 
-              <p className="text-lg lg:text-xl max-w-4xl mx-auto leading-relaxed" style={{ color: colors.stone[700] }}>
+              <p
+                className="text-lg lg:text-xl max-w-4xl mx-auto leading-relaxed"
+                style={{ color: colors.stone[700] }}
+              >
                 AlmanacAI observes, aggregates, and organizes signals from
                 across your digital environment, and presents them as{" "}
-                <span style={{ color: colors.stone[900] }}>clean, actionable tasks</span>.
+                <span style={{ color: colors.stone[900] }}>
+                  clean, actionable tasks
+                </span>
+                .
               </p>
             </motion.div>
           </motion.div>
@@ -133,7 +148,10 @@ export default function Home() {
                   AlmanacAI thinks so you don't have to
                 </h3>
               </div>
-              <div className="space-y-4 text-lg leading-relaxed" style={{ color: colors.stone[600] }}>
+              <div
+                className="space-y-4 text-lg leading-relaxed"
+                style={{ color: colors.stone[700] }}
+              >
                 <p>
                   You don't have to build a to-do list. You don't have to open 6
                   apps to know what's next.
@@ -186,7 +204,10 @@ export default function Home() {
                   Automatically captures every task
                 </h3>
               </div>
-              <div className="space-y-4 text-lg leading-relaxed" style={{ color: colors.stone[600] }}>
+              <div
+                className="space-y-4 text-lg leading-relaxed"
+                style={{ color: colors.stone[700] }}
+              >
                 <p>New email? New Slack DM? Meeting invite?</p>
                 <p>
                   AlmanacAI reads between the lines and instantly creates
@@ -236,7 +257,10 @@ export default function Home() {
                   Real-time dynamic updates
                 </h3>
               </div>
-              <div className="space-y-4 text-lg leading-relaxed" style={{ color: colors.stone[600] }}>
+              <div
+                className="space-y-4 text-lg leading-relaxed"
+                style={{ color: colors.stone[700] }}
+              >
                 <p>Plans change? — AlmanacAI keeps up.</p>
                 <p>
                   If a new meeting appears, a plan gets delayed, or you
@@ -300,7 +324,10 @@ export default function Home() {
                   Learns your patterns. Adapts to your rhythm.
                 </h3>
               </div>
-              <div className="space-y-4 text-lg leading-relaxed" style={{ color: colors.stone[600] }}>
+              <div
+                className="space-y-4 text-lg leading-relaxed"
+                style={{ color: colors.stone[700] }}
+              >
                 <p>The more you use it, the smarter it becomes.</p>
                 <p>
                   AlmanacAI observes your habits. The way you talk, the things
@@ -338,16 +365,25 @@ export default function Home() {
                   Transparent. Private. Yours.
                 </h3>
               </div>
-              <div className="space-y-4 text-lg leading-relaxed" style={{ color: colors.stone[600] }}>
+              <div
+                className="space-y-4 text-lg leading-relaxed"
+                style={{ color: colors.stone[700] }}
+              >
                 <p>Perhaps the most important one. YOU CONTROL. ALWAYS.</p>
                 <p>
-                  The <span style={{ color: colors.stone[900] }}>Monitor Dashboard</span>{" "}
+                  The{" "}
+                  <span style={{ color: colors.stone[900] }}>
+                    Monitor Dashboard
+                  </span>{" "}
                   shows exactly what AlmanacAI is tracking — from emails to
                   meetings — and lets you toggle visibility for anything.
                 </p>
                 <p>
                   Your data, your rules. AlmanacAI works{" "}
-                  <span style={{ color: colors.stone[900] }}>for you, not on you</span>.
+                  <span style={{ color: colors.stone[900] }}>
+                    for you, not on you
+                  </span>
+                  .
                 </p>
               </div>
             </motion.div>
@@ -398,7 +434,10 @@ export default function Home() {
             Almanac Research
           </h2>
 
-          <div className="space-y-6 text-lg leading-relaxed" style={{ color: colors.stone[700] }}>
+          <div
+            className="space-y-6 text-lg leading-relaxed"
+            style={{ color: colors.stone[700] }}
+          >
             <p>
               Almanac Research is redefining how humans and AI collaborate with
               its Digital Ambient Intelligence systems in what we call{" "}

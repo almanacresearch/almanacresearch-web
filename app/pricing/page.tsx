@@ -175,7 +175,10 @@ export default function Pricing() {
                   </h3>
 
                   {/* Description */}
-                  <p className="mb-6 min-h-[3rem]" style={{ color: colors.stone[600] }}>
+                  <p
+                    className="mb-6 min-h-[3rem]"
+                    style={{ color: colors.stone[600] }}
+                  >
                     {plan.description}
                   </p>
 
@@ -189,15 +192,23 @@ export default function Pricing() {
                         {plan.price_anually}
                       </span>
                       {plan.period && (
-                        <span style={{ color: colors.stone[500] }}>{plan.period}</span>
+                        <span style={{ color: colors.stone[600] }}>
+                          {plan.period}
+                        </span>
                       )}
                     </div>
                     {plan.price_monthly && (
                       <div className="mt-3 space-y-1">
-                        <p className="text-xs" style={{ color: colors.stone[600] }}>
+                        <p
+                          className="text-xs"
+                          style={{ color: colors.stone[700] }}
+                        >
                           {plan.price_anually}/month, billed annually
                         </p>
-                        <p className="text-xs" style={{ color: colors.stone[500] }}>
+                        <p
+                          className="text-xs"
+                          style={{ color: colors.stone[600] }}
+                        >
                           {plan.price_monthly} when billed monthly
                         </p>
                       </div>
@@ -320,7 +331,7 @@ export default function Pricing() {
         >
           Loved by thousands of users
         </h2>
-        <p className="text-xl" style={{ color: colors.stone[600] }}>
+        <p className="text-xl" style={{ color: colors.stone[700] }}>
           See what our customers have to say about AlmanacAI
         </p>
         </motion.div>
