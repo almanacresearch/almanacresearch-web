@@ -32,7 +32,7 @@ export function Hero() {
               </p>
               <h1
                 className="text-6xl lg:text-7xl font-bold"
-                style={{ color: colors.background.white }}
+                style={{ color: colors.background.cream }}
               >
                 AlmanacAI
               </h1>

@@ -99,18 +99,10 @@ export default function AboutUs() {
             <p>
               Founded on the belief that{" "}
               <span style={{ color: colors.stone[900] }}>
-                the best technology blends in becomes invisible
+                the best technology blends in and becomes invisible
               </span>
               , we focus on deep research at the intersection of AI, human
               productivity, and cognitive science.
-            </p>
-            <p>
-              And so, instead of adding more features, more notifications, more
-              complexity — we build systems that{" "}
-              <span style={{ color: colors.stone[900] }}>
-                reduce friction, eliminate clutter, and get out of your way
-              </span>
-              .
             </p>
           </motion.div>
         </div>
@@ -137,26 +129,12 @@ export default function AboutUs() {
                   boxShadow: `0 20px 60px ${rgba(colors.primary.darkBrown, 0.3)}`,
                 }}
               >
-                {/* Decorative elements */}
-                <div
-                  className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-20 blur-2xl"
-                  style={{
-                    background: `radial-gradient(circle, ${colors.background.white}, transparent)`,
-                  }}
-                ></div>
-                <div
-                  className="absolute bottom-0 left-0 w-32 h-32 rounded-full opacity-20 blur-2xl"
-                  style={{
-                    background: `radial-gradient(circle, ${colors.background.white}, transparent)`,
-                  }}
-                ></div>
-
                 <div className="relative z-10">
                   <h2
-                    className="text-4xl lg:text-5xl mb-6"
-                    style={{ color: colors.background.white }}
+                    className="text-4xl lg:text-5xl mb-6 italic"
+                    style={{ color: colors.background.cream }}
                   >
-                    <i>Story</i>
+                    Story
                   </h2>
                   <div
                     className="space-y-4 text-lg italic"
@@ -170,10 +148,11 @@ export default function AboutUs() {
                       <span className="text-white italic"></span>
                     </p>
                     <p>
-                      But productivity tools shouldn't right? I realised we were
-                      spending more time planning our work than doing it. What
-                      if planning just... happened? And with today's state of
-                      AI, it can, actually, just happen.
+                      But productivity tools shouldn't right? I realized we were
+                      spending more time planning our work than actually doing
+                      it. Imagine if planning just... happened. And with the
+                      breakthroughs in AI, and the right vision we can make it
+                      happen.
                     </p>
                   </div>
                 </div>
@@ -192,7 +171,7 @@ export default function AboutUs() {
                 className="text-2xl"
                 style={{ color: colors.primary.darkBrown }}
               >
-                That explains AlmanacAI.
+                That's AlmanacAI.
               </p>
               <p>
                 An{" "}
@@ -205,7 +184,7 @@ export default function AboutUs() {
               </p>
               <p>
                 No more context switching. No more mental overhead. No more "let
-                me just organize my to-do list first."
+                me just organize myself first."
               </p>
               <p className="text-xl italic text-stone-900">
                 Just you, doing your best work. AlmanacAI handles the rest.
