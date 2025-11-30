@@ -13,7 +13,7 @@ function emailHTML(verifyLink: string) {
 
       <!-- Company Name -->
       <div style="text-align:center;margin-bottom:30px;">
-        <h1 style="color:#c9a45c;font-size:24px;letter-spacing:0.6px;margin:0;">ALMANAC RESEARCH</h1>
+        <h1 style="color:#c9a45c;font-size:15px;letter-spacing:0.6px;margin:0;">ALMANAC RESEARCH</h1>
       </div>
 
       <!-- Heading -->
