@@ -13,7 +13,7 @@ function emailHTML(verifyLink: string) {
 
       <!-- Company Name -->
       <div style="text-align:center;margin-bottom:30px;">
-        <h1 style="color:#c9a45c;font-size:15px;letter-spacing:0.6px;margin:0;">ALMANAC RESEARCH</h1>
+        <h1 style="color:#c9a45c;font-size:12px;letter-spacing:0.6px;margin:0;">ALMANAC RESEARCH</h1>
       </div>
 
       <!-- Heading -->
@@ -90,7 +90,6 @@ export async function POST(req: Request) {
         pass: process.env.SMTP_PASS,
       },
     });
-    await transporter.verify();
 
     const token = crypto.randomBytes(32).toString("hex");
     const verifyLink = `${process.env.NEXT_PUBLIC_BASE_URL}/api/verify-email?token=${token}`;
@@ -110,12 +109,16 @@ export async function POST(req: Request) {
         );
       }
 
-      await transporter.sendMail({
-        from: `"Almanac Research" <${process.env.SMTP_USER}>`,
-        to: email,
-        subject: "Confirm your email to join AlmanacAI waitlist",
-        html: emailHTML(verifyLink),
-      });
+      // Respond immediately, send mail in background
+      setTimeout(() => {
+        transporter.sendMail({
+          from: `"Almanac Research" <${process.env.SMTP_USER}>`,
+          to: email,
+          subject: "Confirm your email to join AlmanacAI waitlist",
+          html: emailHTML(verifyLink),
+        });
+      }, 0);
+      // TODO: Use a real job queue for production
 
       return NextResponse.json({
         status: "resent",
@@ -133,12 +136,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Database error" }, { status: 500 });
     }
 
-    await transporter.sendMail({
-      from: `"Almanac Research" <${process.env.SMTP_USER}>`,
-      to: email,
-      subject: "Confirm your email to join AlmanacAI waitlist",
-      html: emailHTML(verifyLink),
-    });
+    // Respond immediately, send mail in background
+    setTimeout(() => {
+      transporter.sendMail({
+        from: `"Almanac Research" <${process.env.SMTP_USER}>`,
+        to: email,
+        subject: "Confirm your email to join AlmanacAI waitlist",
+        html: emailHTML(verifyLink),
+      });
+    }, 0);
+    // TODO: Use a real job queue for production
 
     return NextResponse.json({
       message:

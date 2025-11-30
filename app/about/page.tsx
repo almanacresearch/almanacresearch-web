@@ -97,12 +97,9 @@ export default function AboutUs() {
               attention, add complexity, or create noise.
             </p>
             <p>
-              Founded on the belief that{" "}
-              <span style={{ color: colors.stone[900] }}>
-                the best technology blends in and becomes invisible
-              </span>
-              , we focus on deep research at the intersection of AI, human
-              productivity, and cognitive science.
+              Grounded in deep research across AI, human productivity, and
+              cognitive science, we build systems that blend into your life
+              empowering you to do more, learn more and live more.
             </p>
           </motion.div>
         </div>
@@ -178,9 +175,8 @@ export default function AboutUs() {
                 <span style={{ color: colors.stone[900] }}>
                   autonomous intelligence layer
                 </span>{" "}
-                that sits silently in the background, watching your digital
-                ecosystem, learning your patterns, and organizing your chaos
-                into clarity.
+                that sits in the background, watching your digital ecosystem,
+                learning your patterns, and organizing your chaos into clarity.
               </p>
               <p>
                 No more context switching. No more mental overhead. No more "let
