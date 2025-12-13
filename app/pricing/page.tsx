@@ -427,8 +427,8 @@ export default function Pricing() {
               Ready to get started?
             </h2>
             <p className="text-xl mb-10" style={{ color: colors.stone[600] }}>
-              Join thousands of users who are transforming their productivity
-              with AlmanacAI.
+              Join thousands of users who are enhancing their capabilities with
+              AlmanacAI.
             </p>
             <button
               className="px-10 py-5 rounded-xl text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl"

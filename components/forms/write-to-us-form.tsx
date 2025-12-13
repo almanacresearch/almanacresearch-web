@@ -61,7 +61,11 @@ export function WriteToUsForm() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="name" className="block mb-2 text-lg" style={{ color: colors.stone[900] }}>
+            <label
+              htmlFor="name"
+              className="block mb-2 text-lg"
+              style={{ color: colors.stone[900] }}
+            >
               Your Name
             </label>
             <Input
@@ -124,7 +128,7 @@ export function WriteToUsForm() {
               borderColor: colors.primary.gold,
               backgroundColor: "rgba(255, 255, 255, 0.5)",
             }}
-            placeholder="What would make AlmanacAI indispensable for you? Share your expectations, frustrations with current tools, or wild ideas..."
+            placeholder="What would make AlmanacAI indispensable for you? Share your expectations, frustrations with current tools, your ideas!"
             required
           />
         </div>
@@ -160,7 +164,12 @@ export function WriteToUsForm() {
             border: `1px solid rgba(196, 165, 123, 0.3)`,
           }}
         >
-          <p className="text-base" style={{ color: "rgba(254, 243, 199, 0.8)" }}>{popupMessage}</p>
+          <p
+            className="text-base"
+            style={{ color: "rgba(254, 243, 199, 0.8)" }}
+          >
+            {popupMessage}
+          </p>
         </motion.div>
       )}
     </>

@@ -26,7 +26,7 @@ export default function TermsOfService() {
     },
     {
       title: "2. Description of Service",
-      content: `AlmanacAI provides an AI-powered productivity platform that helps users manage tasks, organize information, and enhance their workflow ("the Service"). The Service is provided "as is" and Almanac Research reserves the right to modify, suspend, or discontinue the Service at any time without notice.`,
+      content: `AlmanacAI is an AI-powered tool that helps users manage tasks, organize information, and enhance their workflow ("the Service"). The Service is provided "as is" and Almanac Research reserves the right to modify, suspend, or discontinue the Service at any time without notice.`,
     },
     {
       title: "3. User Accounts",
