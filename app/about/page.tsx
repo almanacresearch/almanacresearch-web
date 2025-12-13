@@ -97,9 +97,9 @@ export default function AboutUs() {
               attention, add complexity, or create noise.
             </p>
             <p>
-              Grounded in deep research across AI, human productivity, and
-              cognitive science, we build systems that blend into your life
-              empowering you to do more, learn more and live more.
+              Grounded in deep research across AI, human behavior, and cognitive
+              science, we build systems that blend into your life empowering you
+              to do more, learn more and live more.
             </p>
           </motion.div>
         </div>
@@ -140,16 +140,14 @@ export default function AboutUs() {
                     }}
                   >
                     <p>
-                      This started with a simple observation: every app wants
-                      your attention. Every tool demands your time.
-                      <span className="text-white italic"></span>
+                      Cal Newport emphasizes in <b>Deep Work</b>, meaningful
+                      work requires uninterrupted focus. He explains, every time
+                      we switch between tasks, our brain pays a “switching
+                      cost.”
                     </p>
                     <p>
-                      But productivity tools shouldn't right? I realized we were
-                      spending more time planning our work than actually doing
-                      it. Imagine if planning just... happened. And with the
-                      breakthroughs in AI, and the right vision we can make it
-                      happen.
+                      All these apps overwhelm our day, we get consumed by
+                      meaningless notifications.
                     </p>
                   </div>
                 </div>
@@ -168,21 +166,23 @@ export default function AboutUs() {
                 className="text-2xl"
                 style={{ color: colors.primary.darkBrown }}
               >
-                That's AlmanacAI.
+                AlmanacAI
               </p>
               <p>
                 An{" "}
                 <span style={{ color: colors.stone[900] }}>
                   autonomous intelligence layer
                 </span>{" "}
-                that sits in the background, watching your digital ecosystem,
-                learning your patterns, and organizing your chaos into clarity.
+                that sits in the background. You don't plan - You do the work.
+                And while you are doing your most meaningful work, it quietly
+                brings together every important thing and organizes them at one
+                place.
               </p>
               <p>
-                No more context switching. No more mental overhead. No more "let
-                me just organize myself first."
+                It provides clarity in chaos, structure in ambiguity, and focus
+                in distraction.
               </p>
-              <p className="text-xl italic text-stone-900">
+              <p className="text-xl italic">
                 Just you, doing your best work. AlmanacAI handles the rest.
               </p>
             </motion.div>
@@ -346,7 +346,7 @@ export default function AboutUs() {
               className="text-xl max-w-2xl mx-auto"
               style={{ color: colors.stone[600] }}
             >
-              Your insights shape the future of productivity. Tell us what you
+              Your insights shape the future of AlmanacAI. Tell us what you
               expect, what frustrates you, what you would like AlmanacAI to be.
             </p>
           </motion.div>

@@ -109,9 +109,6 @@ export function Nav() {
             )}
           </button>
         </div>
-
-        {/* Empty div for desktop layout balance */}
-        <div className="hidden md:block"></div>
       </nav>
 
       {/* Mobile Navigation */}

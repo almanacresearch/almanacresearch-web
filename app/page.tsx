@@ -90,7 +90,7 @@ export default function Home() {
               >
                 AlmanacAI is the{" "}
                 <span style={{ color: colors.primary.mediumBrown }}>
-                  autonomous layer of productivity
+                  autonomous layer of intelligence
                 </span>{" "}
                 that sits on top of every application you use.
               </h2>
@@ -153,21 +153,14 @@ export default function Home() {
                 style={{ color: colors.stone[700] }}
               >
                 <p>
-                  You don't have to build a to-do list. You don't have to open 6
-                  apps to know what's next.
-                </p>
-                <p>
-                  AlmanacAI quietly works in the background — observing your
-                  digital life and organizes your entire day for you, all by
+                  You don't need to make a to-do list first thing in the
+                  morning. AlmanacAI quietly does it for you — reading signals
+                  across your tools, it organizes your entire day, all by
                   itself.
                 </p>
                 <p>
-                  It connects with your{" "}
-                  <span style={{ color: colors.stone[900] }}>
-                    Outlook, Gmail, Slack, Calendar, Zoom, Teams
-                  </span>{" "}
-                  — everything. Every meeting, email, message, and reminder is
-                  transformed into one clear actionable to-do.
+                  It knows whats important to you, what needs to be done, and
+                  when.
                 </p>
               </div>
             </motion.div>
@@ -208,19 +201,18 @@ export default function Home() {
                 className="space-y-4 text-lg leading-relaxed"
                 style={{ color: colors.stone[700] }}
               >
-                <p>New email? New Slack DM? Meeting invite?</p>
+                <p>Slack DM? New email? Ah, missed calling mom!</p>
                 <p>
-                  AlmanacAI reads between the lines and instantly creates
-                  actionable to-dos —
+                  It connects with your{" "}
                   <span style={{ color: colors.stone[900] }}>
-                    {" "}
-                    "Follow up with Sarah," "Review proposal at 4 PM," "Pay
-                    subscription renewal," "Call Mom."
-                  </span>
+                    Outlook, Gmail, Slack, Calendar, Zoom, Teams
+                  </span>{" "}
+                  and brings it all together.
                 </p>
                 <p>
-                  You'll never forget, miss, or overlook anything again —
-                  because AlmanacAI sees it all.
+                  AlmanacAI reads between lines, everything important — meeting,
+                  email, message, reminder is transformed into clear actionable
+                  to-dos.
                 </p>
               </div>
             </motion.div>
@@ -264,7 +256,7 @@ export default function Home() {
                 <p>Plans change? — AlmanacAI keeps up.</p>
                 <p>
                   If a new meeting appears, a plan gets delayed, or you
-                  reschedule something, your to-do list updates instantly.
+                  reschedule something, it updates itself, instantly.
                 </p>
                 <p>
                   No manual edits. No mental juggling. Just{" "}
@@ -330,9 +322,9 @@ export default function Home() {
               >
                 <p>The more you use it, the smarter it becomes.</p>
                 <p>
-                  AlmanacAI observes your habits. The way you talk, the things
-                  you prioritize, — and creates and orders your tasks a little
-                  better each time.
+                  AlmanacAI learns what's important to you. The way you talk,
+                  the things you prioritize, — and creates and orders your tasks
+                  a little better each time.
                 </p>
                 <p>
                   It evolves with you.{" "}
@@ -375,8 +367,8 @@ export default function Home() {
                   <span style={{ color: colors.stone[900] }}>
                     Monitor Dashboard
                   </span>{" "}
-                  shows exactly what AlmanacAI is tracking — from emails to
-                  meetings — and lets you toggle visibility for anything.
+                  shows exactly what AlmanacAI is tracking — from emails to DMs
+                  — so you decide what you want it to see.
                 </p>
                 <p>
                   Your data, your rules. AlmanacAI works{" "}
