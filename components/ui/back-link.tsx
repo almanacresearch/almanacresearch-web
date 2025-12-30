@@ -25,7 +25,7 @@ export function BackLink({ href = "/", className = "" }: BackLinkProps) {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.6, delay: 0.3 }}
+      transition={{ duration: 0.2, delay: 0.1 }}
       className={`pb-16 text-center ${className}`}
     >
       <button

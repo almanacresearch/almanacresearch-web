@@ -8,9 +8,9 @@ import { Brain, Zap, Lock } from "lucide-react";
 import { Nav } from "@/components/nav/nav";
 import { Hero } from "@/components/hero/hero";
 import { Footer } from "@/components/footer/footer";
-import { EmailRegistrationForm } from "@/components/forms/email-registration-form";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { GlassCard } from "@/components/ui/glass-card";
+import { AlmanacaiGmailAccess } from "@/components/ui/almanacai-gmail-access";
 
 // Constants
 import { colors, gradients } from "@/lib/constants/theme";
@@ -39,7 +39,7 @@ export default function Home() {
       {/* Introduction Section */}
       <section
         id="features"
-        className="py-24 lg:py-32 px-4 sm:px-6 lg:px-8"
+        className="py-12 lg:py-16 px-4 sm:px-6 lg:px-8"
         style={{ backgroundColor: colors.background.cream }}
       >
         <div className="max-w-5xl mx-auto">
@@ -67,8 +67,7 @@ export default function Home() {
                 className="text-2xl lg:text-3xl italic relative z-10"
                 style={{ color: colors.primary.darkBrown, lineHeight: "1.6" }}
               >
-                "Time spent planning for the task is time stolen from doing the
-                task."
+                "Time spent planning is time stolen from doing."
               </p>
             </div>
 
@@ -149,7 +148,7 @@ export default function Home() {
                 </h3>
               </div>
               <div
-                className="space-y-4 text-lg leading-relaxed"
+                className="space-y-4 text-md leading-relaxed"
                 style={{ color: colors.stone[700] }}
               >
                 <p>
@@ -201,7 +200,7 @@ export default function Home() {
                 className="space-y-4 text-lg leading-relaxed"
                 style={{ color: colors.stone[700] }}
               >
-                <p>Slack DM? New email? Ah, missed calling mom!</p>
+                <p>Slack DM? New email?</p>
                 <p>
                   It connects with your{" "}
                   <span style={{ color: colors.stone[900] }}>
@@ -399,15 +398,13 @@ export default function Home() {
             className="text-center mt-32 pt-16 border-t border-stone-200"
           >
             <h3
-              className="text-2xl lg:text-3xl mb-6"
+              className="text-2xl lg:text-3xl mb-6 pb-16"
               style={{ color: colors.primary.darkBrown }}
             >
               <i>And yet, it's simply a to-do list</i>. 😉
             </h3>
 
-            <div className="max-w-xl mx-auto">
-              <EmailRegistrationForm />
-            </div>
+            <AlmanacaiGmailAccess variant="light" />
           </motion.div>
         </div>
       </section>
@@ -440,9 +437,9 @@ export default function Home() {
             </p>
 
             <p>
-              At its core, we are an AI Research Lab focused on deep,
-              fundamental research to push the boundaries of AI. We work to
-              build systems that meaningfully improve how people live.
+              We are an AI Research Lab focused on deep, fundamental research to
+              push the boundaries of AI. We work to build systems that
+              meaningfully improve how people live.
             </p>
           </div>
         </div>
