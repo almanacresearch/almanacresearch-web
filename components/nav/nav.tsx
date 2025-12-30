@@ -9,6 +9,7 @@ export function Nav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isResourcesOpen, setIsResourcesOpen] = useState(false);
   const [isMobileResourcesOpen, setIsMobileResourcesOpen] = useState(false);
+  const [isDarkBackground, setIsDarkBackground] = useState(true);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent | TouchEvent) {
@@ -27,87 +28,119 @@ export function Nav() {
       document.removeEventListener("touchstart", handleClickOutside);
     };
   }, [isMenuOpen]);
+
+  useEffect(() => {
+    function handleScroll() {
+      const heroHeight = window.innerHeight * 0.6;
+      const scrollPosition = window.scrollY;
+
+      setIsDarkBackground(scrollPosition < heroHeight);
+    }
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   return (
     <>
       <nav
-        className="flex justify-between items-center px-10 py-4 border-neutral-200 backdrop-blur-md sticky top-0 z-50"
-        style={{ backgroundColor: `${colors.background.cream}80` }}
+        className="flex justify-between items-center px-4 md:px-10 py-4 border-neutral-200 backdrop-blur-md fixed top-0 left-0 right-0 z-50"
+        style={{ backgroundColor: `${colors.background.cream}5` }}
       >
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-12">
-          <h1 className="text-xl font-bold text-amber-900">ALMANAC RESEARCH</h1>
-
-          <div className="flex items-center space-x-8 font-medium">
-            <div className="group relative inline-block">
-              <button
-                className="hover:text-amber-900 transition flex items-center gap-2"
-                onMouseEnter={() => setIsResourcesOpen(true)}
-                onMouseLeave={() => setIsResourcesOpen(false)}
-              >
-                Resources
-                <motion.svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 transition-transform group-hover:rotate-180"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <motion.path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </motion.svg>
-              </button>
-
-              {/* Dropdown menu */}
-              {isResourcesOpen && (
-                <div
-                  className="absolute left-0 z-10 bg-white border border-neutral-200 rounded-lg shadow-md mt-0 w-48 overflow-hidden"
+        <div className="hidden md:flex items-center justify-between w-full">
+          <div className="flex items-center space-x-12">
+            <h1
+              className={`text-xl font-bold ${isDarkBackground ? "text-amber-50" : "text-amber-900"}`}
+            >
+              ALMANAC RESEARCH
+            </h1>
+            <div className="flex items-center space-x-8 font-medium">
+              <div className="group relative inline-block">
+                <button
+                  className={`${isDarkBackground ? "hover:text-amber-100 text-amber-50" : "hover:text-amber-900 text-amber-900"} transition flex items-center gap-2`}
                   onMouseEnter={() => setIsResourcesOpen(true)}
                   onMouseLeave={() => setIsResourcesOpen(false)}
                 >
-                  <a
-                    href="/blog"
-                    className="block px-4 py-2 hover:bg-neutral-50 hover:text-amber-900"
+                  Resources
+                  <motion.svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 transition-transform group-hover:rotate-180"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    Blog
-                  </a>
-                  <a
-                    href="/coming-soon?title=Pricing&description=We're finalizing our pricing plans to offer the best value for individuals and teams. Check back soon!"
-                    className="block px-4 py-2 hover:bg-neutral-50 hover:text-amber-900"
+                    <motion.path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </motion.svg>
+                </button>
+                {/* Dropdown menu */}
+                {isResourcesOpen && (
+                  <div
+                    className="absolute left-0 z-10 bg-white border border-neutral-200 rounded-lg shadow-md mt-0 w-48 overflow-hidden"
+                    onMouseEnter={() => setIsResourcesOpen(true)}
+                    onMouseLeave={() => setIsResourcesOpen(false)}
                   >
-                    Pricing
-                  </a>
-                  <a
-                    href="/enterprise"
-                    className="block px-4 py-2 hover:bg-neutral-50 hover:text-amber-900"
-                  >
-                    Enterprise
-                  </a>
-                </div>
-              )}
+                    <a
+                      href="/blog"
+                      className="block px-4 py-2 hover:bg-neutral-50 hover:text-amber-900"
+                    >
+                      Blog
+                    </a>
+                    <a
+                      href="/coming-soon?title=Pricing&description=We're finalizing our pricing plans to offer the best value for individuals and teams. Check back soon!"
+                      className="block px-4 py-2 hover:bg-neutral-50 hover:text-amber-900"
+                    >
+                      Pricing
+                    </a>
+                    <a
+                      href="/enterprise"
+                      className="block px-4 py-2 hover:bg-neutral-50 hover:text-amber-900"
+                    >
+                      Enterprise
+                    </a>
+                  </div>
+                )}
+              </div>
+              <a
+                href="/about"
+                className={`${isDarkBackground ? "hover:text-amber-100 text-amber-50" : "hover:text-amber-900 text-amber-900"} transition`}
+              >
+                About Us
+              </a>
+              <a
+                href="/careers"
+                className={`${isDarkBackground ? "hover:text-amber-100 text-amber-50" : "hover:text-amber-900 text-amber-900"} transition`}
+              >
+                We're Hiring!
+              </a>
             </div>
-            <a href="/about" className="hover:text-amber-900 transition">
-              About Us
-            </a>
-            <a href="/careers" className="hover:text-amber-900 transition">
-              We're Hiring!
-            </a>
           </div>
         </div>
 
         {/* Mobile Logo & Menu Button */}
         <div className="md:hidden flex items-center justify-between w-full">
-          <h1 className="text-xl font-bold text-amber-900">ALMANAC RESEARCH</h1>
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? (
-              <X className="h-6 w-6 text-amber-900" />
-            ) : (
-              <Menu className="h-6 w-6 text-amber-900" />
-            )}
-          </button>
+          <h1
+            className={`text-xl font-bold ${isDarkBackground ? "text-amber-50" : "text-amber-900"}`}
+          >
+            ALMANAC RESEARCH
+          </h1>
+          <div className="flex items-center gap-4">
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? (
+                <X
+                  className={`h-6 w-6 ${isDarkBackground ? "text-amber-50" : "text-amber-900"}`}
+                />
+              ) : (
+                <Menu
+                  className={`h-6 w-6 ${isDarkBackground ? "text-amber-50" : "text-amber-900"}`}
+                />
+              )}
+            </button>
+          </div>
         </div>
       </nav>
 
