@@ -7,18 +7,18 @@ import { colors } from "@/lib/constants/theme";
 import { UserProfileMenu } from "@/components/ui/user-profile-menu";
 
 const NAV_LINKS = [
-  {
-    href: "/coming-soon?title=Pricing&description=We're finalizing our pricing plans to offer the best value for individuals and teams. Check back soon!",
-    label: "Pricing",
-  },
-  { href: "/enterprise", label: "Enterprise" },
+  { href: "/about", label: "About Us" },
+  { href: "/careers", label: "We're Hiring!" },
   { href: "https://docs.almanacresearch.com", label: "Docs", external: true },
 ];
 
 const RESOURCE_LINKS = [
   { href: "/blog", label: "Blog" },
-  { href: "/about", label: "About Us" },
-  { href: "/careers", label: "We're Hiring!" },
+  {
+    href: "/coming-soon?title=Pricing&description=We're finalizing our pricing plans to offer the best value for individuals and teams. Check back soon!",
+    label: "Pricing",
+  },
+  { href: "/enterprise", label: "Enterprise" },
 ];
 
 export function Nav() {

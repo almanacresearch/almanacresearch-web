@@ -6,7 +6,7 @@ import {
   UserInfo,
 } from "../types";
 
-const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!;
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
 
 const oAuth2Client = new OAuth2Client(GOOGLE_CLIENT_ID);

@@ -22,7 +22,7 @@ export default function DocsSubdomainHome() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <motion.div {...fadeInHero}>
             <motion.h1
-              className="text-6xl lg:text-8xl mb-8"
+              className="text-6xl lg:text-8xl mb-4"
               style={{
                 color: colors.primary.darkBrown,
                 lineHeight: "1.2",
@@ -30,8 +30,17 @@ export default function DocsSubdomainHome() {
               {...fadeInHero}
               transition={{ delay: 0.5, duration: 2.0 }}
             >
-              Documentation
+              Public Docs
             </motion.h1>
+
+            <motion.p
+              className="text-lg lg:text-xl mb-8"
+              style={{ color: colors.stone[700] }}
+              {...fadeIn}
+              transition={{ delay: 1.0, duration: 1.5 }}
+            >
+              What we are building, how we are building
+            </motion.p>
 
             <motion.p
               className="text-3xl lg:text-4xl"
