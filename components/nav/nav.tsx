@@ -69,34 +69,24 @@ export function Nav() {
       return;
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setIsDarkBackground(
-              entry.target.getAttribute("data-navbar-theme") === "dark",
-            );
-            break;
-          }
+    const checkTheme = () => {
+      const navbarHeight = 64;
+      for (const section of sections) {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= navbarHeight && rect.bottom > navbarHeight) {
+          setIsDarkBackground(
+            section.getAttribute("data-navbar-theme") === "dark",
+          );
+          return;
         }
-      },
-      { rootMargin: "-64px 0px -95% 0px", threshold: 0 },
-    );
-
-    sections.forEach((section) => observer.observe(section));
-
-    // Initial check
-    for (const section of sections) {
-      const rect = section.getBoundingClientRect();
-      if (rect.top <= 80 && rect.bottom > 64) {
-        setIsDarkBackground(
-          section.getAttribute("data-navbar-theme") === "dark",
-        );
-        break;
       }
-    }
+    };
 
-    return () => observer.disconnect();
+    window.addEventListener("scroll", checkTheme, { passive: true });
+
+    checkTheme();
+
+    return () => window.removeEventListener("scroll", checkTheme);
   }, []);
 
   const textColor = isDarkBackground ? "text-amber-50" : "text-amber-900";
@@ -213,7 +203,7 @@ export function Nav() {
               {/* Mobile Resources Dropdown */}
               <div>
                 <button
-                  className="flex items-center hover:text-amber-900 transition-colors w-full font-medium"
+                  className="flex items-center text-amber-900 hover:text-amber-700 transition-colors w-full font-medium"
                   onClick={() =>
                     setIsMobileResourcesOpen(!isMobileResourcesOpen)
                   }
@@ -259,7 +249,7 @@ export function Nav() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="hover:text-amber-900 transition font-medium"
+                  className="text-amber-900 hover:text-amber-700 transition font-medium"
                   onClick={() => !link.external && closeMobileMenu()}
                   {...(link.external && {
                     target: "_blank",
