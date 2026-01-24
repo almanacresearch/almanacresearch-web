@@ -4,7 +4,7 @@ import { clearUserCache, getUser } from "./index";
 
 // Support multiple auth success listeners
 const authSuccessCallbacks = new Set<() => void>();
-let focusEventCleanup: (() => void) | null = null;
+let cleanupFunctions: (() => void)[] = [];
 
 export function onAuthSuccess(callback: () => void): () => void {
   authSuccessCallbacks.add(callback);
@@ -22,10 +22,8 @@ function notifyAuthSuccess(): void {
 }
 
 export function cleanupAuthListeners(): void {
-  if (focusEventCleanup) {
-    focusEventCleanup();
-    focusEventCleanup = null;
-  }
+  cleanupFunctions.forEach((cleanup) => cleanup());
+  cleanupFunctions = [];
 }
 
 export function signInWithGoogle(customReturnUrl?: string): void {
@@ -34,6 +32,16 @@ export function signInWithGoogle(customReturnUrl?: string): void {
   // Store current URL so callback can redirect back
   const returnUrl = encodeURIComponent(customReturnUrl || window.location.href);
 
+  // Handle auth success via postMessage (works on mobile)
+  const handleMessage = (event: MessageEvent) => {
+    if (event.data?.type === "AUTH_SUCCESS") {
+      clearUserCache();
+      cleanupAuthListeners();
+      notifyAuthSuccess();
+    }
+  };
+
+  // Fallback: Also check on focus (for desktop popup close)
   const handleFocus = async () => {
     clearUserCache();
     const user = await getUser();
@@ -43,10 +51,27 @@ export function signInWithGoogle(customReturnUrl?: string): void {
     }
   };
 
-  window.addEventListener("focus", handleFocus);
-  focusEventCleanup = () => {
-    window.removeEventListener("focus", handleFocus);
+  // Fallback: Check on visibility change (for mobile tab switch)
+  const handleVisibilityChange = async () => {
+    if (document.visibilityState === "visible") {
+      clearUserCache();
+      const user = await getUser();
+      if (user) {
+        cleanupAuthListeners();
+        notifyAuthSuccess();
+      }
+    }
   };
+
+  window.addEventListener("message", handleMessage);
+  window.addEventListener("focus", handleFocus);
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+
+  cleanupFunctions = [
+    () => window.removeEventListener("message", handleMessage),
+    () => window.removeEventListener("focus", handleFocus),
+    () => document.removeEventListener("visibilitychange", handleVisibilityChange),
+  ];
 
   // Use server endpoint for OAuth initiation (single source of truth)
   const authUrl = `/api/auth/google?returnUrl=${returnUrl}`;

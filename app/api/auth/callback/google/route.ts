@@ -141,13 +141,20 @@ export async function GET(request: NextRequest) {
             <p>Signing you in...</p>
           </div>
           <script>
-            setTimeout(function() {
-              if (window.opener) {
+            // Notify parent window of successful auth
+            if (window.opener) {
+              try {
+                window.opener.postMessage({ type: "AUTH_SUCCESS" }, "*");
+              } catch (e) {}
+              setTimeout(function() {
                 window.close();
-              } else {
+              }, 1200);
+            } else {
+              // Mobile: redirected in same tab, go to return URL
+              setTimeout(function() {
                 window.location.href = "${redirectPath}";
-              }
-            }, 1200);
+              }, 1200);
+            }
           </script>
         </body>
       </html>
