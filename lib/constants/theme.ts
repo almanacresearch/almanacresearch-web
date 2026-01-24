@@ -12,7 +12,8 @@ export const colors = {
     white: "#FAF9F7",
   },
   stone: {
-    900: "#57534e",
+    900: "#44403c",
+    800: "#57534e",
     700: "#78716c",
     600: "#a8a29e",
     500: "#d6d3d1",
@@ -47,7 +48,8 @@ export const gradients = {
 
 // Shadows
 export const shadows = {
-  glass: "0 8px 32px 0 rgba(120, 82, 62, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.8), inset 0 -1px 0 0 rgba(146, 102, 79, 0.1)",
+  glass:
+    "0 8px 32px 0 rgba(120, 82, 62, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.8), inset 0 -1px 0 0 rgba(146, 102, 79, 0.1)",
   button: "0 10px 30px rgba(120, 82, 62, 0.4)",
   card: "0 20px 60px rgba(120, 82, 62, 0.3)",
 } as const;

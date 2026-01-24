@@ -1,11 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { colors, gradients } from "@/lib/constants/theme";
+import { getUser } from "@/lib/auth";
+
+const CHAR_LIMITS = {
+  name: 100,
+  email: 254,
+  message: 10000,
+};
 
 export function WriteToUsForm() {
   const [formData, setFormData] = useState({
@@ -14,11 +21,28 @@ export function WriteToUsForm() {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const isOverLimit =
+    formData.name.length > CHAR_LIMITS.name ||
+    formData.email.length > CHAR_LIMITS.email ||
+    formData.message.length > CHAR_LIMITS.message;
+
+  useEffect(() => {
+    getUser().then((user) => {
+      if (user) {
+        setFormData((prev) => ({
+          ...prev,
+          name: user.name || prev.name,
+          email: user.email || prev.email,
+        }));
+      }
+    });
+  }, []);
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -46,10 +70,13 @@ export function WriteToUsForm() {
       setPopupMessage(data.message || "Thank you for reaching out!");
       setTimeout(() => setShowPopup(false), 5000);
       setFormData({ name: "", email: "", message: "" });
-    } catch (error: any) {
-      console.error("Error submitting:", error);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to submit. Please try again.";
       setShowPopup(true);
-      setPopupMessage(error.message || "Failed to submit. Please try again.");
+      setPopupMessage(errorMessage);
       setTimeout(() => setShowPopup(false), 5000);
     } finally {
       setIsSubmitting(false);
@@ -64,7 +91,7 @@ export function WriteToUsForm() {
             <label
               htmlFor="name"
               className="block mb-2 text-lg"
-              style={{ color: colors.stone[900] }}
+              style={{ color: colors.stone[800] }}
             >
               Your Name
             </label>
@@ -76,19 +103,28 @@ export function WriteToUsForm() {
               onChange={handleChange}
               className="h-12 px-5"
               style={{
-                borderColor: colors.primary.gold,
+                borderColor:
+                  formData.name.length > CHAR_LIMITS.name
+                    ? "#ef4444"
+                    : colors.primary.gold,
                 backgroundColor: "rgba(255, 255, 255, 0.5)",
+                color: colors.stone[900],
               }}
               placeholder="Jane Doe"
               required
             />
+            {formData.name.length > CHAR_LIMITS.name && (
+              <p className="text-red-500 text-xs mt-1">
+                Name must be less than {CHAR_LIMITS.name} characters
+              </p>
+            )}
           </div>
 
           <div>
             <label
               htmlFor="email"
               className="block mb-2 text-lg"
-              style={{ color: colors.stone[900] }}
+              style={{ color: colors.stone[800] }}
             >
               Your Email
             </label>
@@ -100,12 +136,21 @@ export function WriteToUsForm() {
               onChange={handleChange}
               className="h-12 px-5"
               style={{
-                borderColor: colors.primary.gold,
+                borderColor:
+                  formData.email.length > CHAR_LIMITS.email
+                    ? "#ef4444"
+                    : colors.primary.gold,
                 backgroundColor: "rgba(255, 255, 255, 0.5)",
+                color: colors.stone[900],
               }}
               placeholder="jane@company.com"
               required
             />
+            {formData.email.length > CHAR_LIMITS.email && (
+              <p className="text-red-500 text-xs mt-1">
+                Email must be less than {CHAR_LIMITS.email} characters
+              </p>
+            )}
           </div>
         </div>
 
@@ -113,7 +158,7 @@ export function WriteToUsForm() {
           <label
             htmlFor="message"
             className="block mb-2 text-lg"
-            style={{ color: colors.stone[900] }}
+            style={{ color: colors.stone[800] }}
           >
             Your Vision for AlmanacAI
           </label>
@@ -125,23 +170,33 @@ export function WriteToUsForm() {
             rows={6}
             className="px-5 py-4 resize-none"
             style={{
-              borderColor: colors.primary.gold,
+              borderColor:
+                formData.message.length > CHAR_LIMITS.message
+                  ? "#ef4444"
+                  : colors.primary.gold,
               backgroundColor: "rgba(255, 255, 255, 0.5)",
+              color: colors.stone[900],
             }}
             placeholder="What would make AlmanacAI indispensable for you? Share your expectations, frustrations with current tools, your ideas!"
             required
           />
+          {formData.message.length > CHAR_LIMITS.message && (
+            <p className="text-red-500 text-xs mt-1">
+              Message must be less than {CHAR_LIMITS.message} characters
+            </p>
+          )}
         </div>
 
         <Button
           type="submit"
-          disabled={isSubmitting}
-          className="group px-8 py-4 rounded-lg h-auto transition-all duration-300 hover:scale-105 hover:shadow-2xl flex items-center gap-3 mx-auto"
+          disabled={isSubmitting || isOverLimit}
+          className="group px-8 py-4 rounded-lg h-auto transition-all duration-300 flex items-center gap-3 mx-auto"
           style={{
             background: gradients.primary,
             boxShadow: "0 10px 30px rgba(120, 82, 62, 0.4)",
             color: colors.background.white,
-            opacity: isSubmitting ? 0.7 : 1,
+            opacity: isSubmitting || isOverLimit ? 0.5 : 1,
+            cursor: isSubmitting || isOverLimit ? "not-allowed" : "pointer",
           }}
         >
           <span className="text-lg">

@@ -1,24 +1,12 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { AnimatedBackground } from "@/components/ui/animated-background";
+import { AnimatedBackground } from "@/components/ui/client-components";
 import { colors } from "@/lib/constants/theme";
 import { BackLink } from "@/components/ui/back-link";
+import { fadeInUp, fadeInUpViewportOnce } from "@/lib/constants/animations";
 
 export default function PrivacyPolicy() {
-  const router = useRouter();
-  const [isLeaving, setIsLeaving] = useState(false);
-
-  const handleClick = () => {
-    setIsLeaving(true);
-
-    setTimeout(() => {
-      router.push("/");
-    }, 300);
-  };
-
   return (
     <div
       className="min-h-screen"
@@ -34,27 +22,26 @@ export default function PrivacyPolicy() {
         <AnimatedBackground variant="simple" />
         <div className="max-w-4xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            {...fadeInUp}
             transition={{ duration: 0.8 }}
             className="text-center mb-8"
           >
             <p
               className="text-sm tracking-wider mb-4"
-              style={{ color: "#92664F" }}
+              style={{ color: colors.primary.mediumBrown }}
             >
               ALMANAC RESEARCH
             </p>
             <h1
               className="text-5xl lg:text-6xl mb-6"
-              style={{ color: "#78523E" }}
+              style={{ color: colors.primary.darkBrown }}
             >
               Privacy Policy
             </h1>
-            <p className="text-xl text-stone-600">
+            <p className="text-xl" style={{ color: colors.stone[800] }}>
               Your trust matters. Here's how we protect your data.
             </p>
-            <p className="text-sm text-stone-500 mt-4">
+            <p className="text-sm mt-4" style={{ color: colors.stone[700] }}>
               Last Updated: November 27, 2025
             </p>
           </motion.div>
@@ -103,7 +90,7 @@ export default function PrivacyPolicy() {
               <div className="space-y-6 text-stone-700">
                 <p className="text-lg leading-relaxed">
                   Almanac Research only requests and processes only the data
-                  required to function — with your explicit permission.{" "}
+                  required to function - with your explicit permission.{" "}
                 </p>
 
                 {/* Company-Level Data */}
@@ -143,7 +130,7 @@ export default function PrivacyPolicy() {
                 {/* Product-Level Data */}
                 <div>
                   <h3 className="text-xl text-stone-900 mb-4">
-                    Product-Level Data — AlmanacAI (MVP)
+                    Product-Level Data - AlmanacAI (MVP)
                   </h3>
 
                   {/* A. Account Information */}
@@ -327,18 +314,18 @@ export default function PrivacyPolicy() {
                 </div>
 
                 {/* Google API Services Disclosure */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mt-6">
-                  <h4 className="text-lg text-stone-900 mb-3">
-                    Google API Services User Data Policy
-                  </h4>
-                  <p className="mb-4 leading-relaxed">
+                <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r mt-6">
+                  <p className="text-stone-900 mb-2">
+                    <strong>Google API Services User Data Policy</strong>
+                  </p>
+                  <p className="text-sm leading-relaxed">
                     AlmanacAI's use and transfer of information received from
                     Google APIs will adhere to the{" "}
                     <a
                       href="https://developers.google.com/terms/api-services-user-data-policy"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-900 hover:text-blue-700 underline font-semibold inline-flex items-center gap-1"
+                      className="text-blue-900 hover:text-blue-700 underline inline-flex items-center gap-1"
                     >
                       Google API Services User Data Policy
                       <svg
@@ -764,9 +751,7 @@ export default function PrivacyPolicy() {
             </div>
           </div>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            {...fadeInUpViewportOnce}
             transition={{ duration: 0.6, delay: 0.1 }}
             className="mt-16"
           >
@@ -792,7 +777,7 @@ export default function PrivacyPolicy() {
                 <p>
                   <strong className="text-stone-900">Email:</strong>{" "}
                   <a
-                    href="mailto:privacy@almanacresearch.com"
+                    href="mailto:hello@almanacresearch.com"
                     className="text-stone-900 underline hover:text-amber-900"
                   >
                     hello@almanacresearch.com
