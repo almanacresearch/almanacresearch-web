@@ -6,6 +6,7 @@ import {
   checkRateLimit,
 } from "@/lib/ratelimit";
 import { getServerUser } from "@/lib/auth/server";
+import { sendWriteToUsAckEmail } from "@/lib/email/write-to-us-ack";
 
 export async function POST(req: NextRequest) {
   try {
@@ -57,6 +58,8 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
+
+    sendWriteToUsAckEmail(email, name);
 
     return NextResponse.json({
       message:
