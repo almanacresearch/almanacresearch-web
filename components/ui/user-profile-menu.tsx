@@ -18,7 +18,7 @@ export function UserProfileMenu({
   showSignIn = true,
   signInText = "Sign in",
 }: UserProfileMenuProps) {
-  const { user, isLoading } = useUser();
+  const { user } = useUser();
   const [isOpen, setIsOpen] = useState(false);
 
   const isDark = variant === "dark";
@@ -56,11 +56,6 @@ export function UserProfileMenu({
       ? "text-amber-50 hover:text-amber-100"
       : "text-amber-900 hover:text-amber-900"
   }`;
-
-  // Loading state - show nothing to prevent flicker
-  if (isLoading) {
-    return null;
-  }
 
   // User not signed in
   if (!user) {
