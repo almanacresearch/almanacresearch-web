@@ -1,24 +1,12 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { AnimatedBackground } from "@/components/ui/animated-background";
+import { AnimatedBackground } from "@/components/ui/client-components";
 import { colors } from "@/lib/constants/theme";
 import { BackLink } from "@/components/ui/back-link";
+import { fadeInUp, fadeInUpViewportOnce } from "@/lib/constants/animations";
 
 export default function TermsOfService() {
-  const router = useRouter();
-  const [isLeaving, setIsLeaving] = useState(false);
-
-  const handleClick = () => {
-    setIsLeaving(true);
-
-    setTimeout(() => {
-      router.push("/");
-    }, 300);
-  };
-
   const sections = [
     {
       title: "1. Acceptance of Terms",
@@ -93,27 +81,26 @@ export default function TermsOfService() {
         <AnimatedBackground variant="simple" />
         <div className="max-w-4xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            {...fadeInUp}
             transition={{ duration: 0.8 }}
             className="text-center mb-8"
           >
             <p
               className="text-sm tracking-wider mb-4"
-              style={{ color: "#92664F" }}
+              style={{ color: colors.primary.mediumBrown }}
             >
               ALMANAC RESEARCH
             </p>
             <h1
               className="text-5xl lg:text-6xl mb-6"
-              style={{ color: "#78523E" }}
+              style={{ color: colors.primary.darkBrown }}
             >
               Terms of Service
             </h1>
-            <p className="text-xl text-stone-600">
-              Please read these terms carefully before using AlmanacAI.
+            <p className="text-xl" style={{ color: colors.stone[800] }}>
+              Please read these terms carefully before using AlmanacAI
             </p>
-            <p className="text-sm text-stone-500 mt-4">
+            <p className="text-sm mt-4" style={{ color: colors.stone[700] }}>
               Last Updated: November 27, 2025
             </p>
           </motion.div>
@@ -164,9 +151,7 @@ export default function TermsOfService() {
 
           {/* Contact Box */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            {...fadeInUpViewportOnce}
             transition={{ duration: 0.6, delay: 0.1 }}
             className="mt-16"
           >

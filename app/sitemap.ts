@@ -53,5 +53,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.3,
     },
+    // Subdomains - public landing pages
+    {
+      url: "https://app.almanacresearch.com",
+      lastModified: currentDate,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: "https://appmvp.almanacresearch.com",
+      lastModified: currentDate,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: "https://docs.almanacresearch.com",
+      lastModified: currentDate,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
   ];
 }

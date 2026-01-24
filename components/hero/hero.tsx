@@ -1,12 +1,15 @@
+"use client";
+
 import { motion } from "motion/react";
-import { AnimatedBackground } from "@/components/ui/animated-background";
+import { AnimatedBackground } from "@/components/ui/client-components";
 import { colors } from "@/lib/constants/theme";
 import { LottieAnimation } from "../ui/lottie-animations";
-import { AlmanacaiGmailAccess } from "@/components/ui/almanacai-gmail-access";
+import { AlmanacaiMailAccess } from "@/components/ui/almanacai-mail-access";
 
 export function Hero() {
   return (
     <section
+      data-navbar-theme="dark"
       className={"relative pt-32 pb-20 overflow-hidden"}
       style={{
         background:
@@ -16,15 +19,26 @@ export function Hero() {
       <AnimatedBackground variant="hero" />
 
       <div className="absolute inset-0 flex items-center justify-center opacity-80 pointer-events-none">
+        {/* Mobile animation */}
+        <div className={"w-full -translate-y-8 md:hidden scale-150"}>
+          <LottieAnimation
+            animationPath="/animations/hero-mobile.json"
+            loop={false}
+            autoplay={true}
+            variant="dark"
+          />
+        </div>
+        {/* Desktop animation */}
         <div
           className={
-            "w-full -translate-y-8 md:-translate-y-16 lg:-translate-y-28"
+            "w-full -translate-y-8 md:-translate-y-4 lg:-translate-y-8 hidden md:block"
           }
         >
           <LottieAnimation
-            animationPath="/animations/hero-logo.json"
+            animationPath="/animations/hero.json"
             loop={false}
             autoplay={true}
+            variant="dark"
           />
         </div>
       </div>
@@ -45,16 +59,24 @@ export function Hero() {
                 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl"
                 style={{
                   color: colors.background.cream,
-                  fontFamily: "var(--font-inter)",
                 }}
               >
                 AlmanacAI
               </h1>
-              <p
-                className="text-base sm:text-lg md:text-xl text-amber-50/80"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                Powered Execution
+              <p className="text-base sm:text-lg md:text-xl text-amber-50/80">
+                {"Powered Execution".split("").map((char, index) => (
+                  <motion.span
+                    key={index}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{
+                      duration: 0.1,
+                      delay: 2.5 + index * 0.1,
+                    }}
+                  >
+                    {char}
+                  </motion.span>
+                ))}
               </p>
             </div>
           </motion.div>
@@ -72,7 +94,7 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <AlmanacaiGmailAccess variant="dark" />
+            <AlmanacaiMailAccess variant="dark" />
           </motion.div>
         </div>
       </div>

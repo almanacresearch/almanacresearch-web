@@ -1,9 +1,10 @@
 "use client";
 
-import { AnimatedBackground } from "@/components/ui/animated-background";
+import { AnimatedBackground } from "@/components/ui/client-components";
 import { BackLink } from "@/components/ui/back-link";
 import { motion } from "motion/react";
 import { colors, gradients } from "@/lib/constants/theme";
+import { fadeInHero, fadeIn } from "@/lib/constants/animations";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
@@ -23,16 +24,11 @@ function ComingSoonContent() {
       <AnimatedBackground />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
+        <motion.div {...fadeInHero}>
           <motion.p
             className="text-sm tracking-[0.3em] mb-6 uppercase"
             style={{ color: colors.primary.mediumBrown }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            {...fadeIn}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
             ALMANAC RESEARCH
@@ -44,18 +40,13 @@ function ComingSoonContent() {
               color: colors.primary.darkBrown,
               lineHeight: "1.2",
             }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            {...fadeInHero}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
             {title}
           </motion.h1>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.8 }}
-          >
+          <motion.div {...fadeIn} transition={{ delay: 0.8, duration: 0.8 }}>
             <p
               className="text-3xl lg:text-4xl mb-6"
               style={{
@@ -82,9 +73,18 @@ function ComingSoonContent() {
   );
 }
 
+function LoadingFallback() {
+  return (
+    <div
+      className="min-h-screen flex items-center justify-center"
+      style={{ backgroundColor: colors.background.offWhite }}
+    />
+  );
+}
+
 export default function ComingSoon() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<LoadingFallback />}>
       <ComingSoonContent />
     </Suspense>
   );

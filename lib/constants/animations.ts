@@ -32,11 +32,25 @@ export const fadeInLeft = {
   transition: { duration: 0.6 },
 };
 
+export const fadeInLeftViewportOnce = {
+  initial: { opacity: 0, x: -50 },
+  whileInView: { opacity: 1, x: 0 },
+  viewport: { once: true },
+  transition: { duration: 0.8 },
+};
+
 export const fadeInRight = {
   initial: { opacity: 0, x: 30 },
   whileInView: { opacity: 1, x: 0 },
   viewport: { once: false },
   transition: { duration: 0.6 },
+};
+
+export const fadeInRightViewportOnce = {
+  initial: { opacity: 0, x: 50 },
+  whileInView: { opacity: 1, x: 0 },
+  viewport: { once: true },
+  transition: { duration: 0.8 },
 };
 
 export const scaleOnHover = {
@@ -53,5 +67,5 @@ export const fadeIn = {
 export const fadeInHero = {
   initial: { opacity: 0, y: 30 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 1, ease: "easeOut" },
+  transition: { duration: 1, ease: "easeOut" as const },
 };

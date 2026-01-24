@@ -8,12 +8,12 @@ export function Footer() {
         <div>
           <h4 className="font-bold text-lg">ALMANAC RESEARCH</h4>
           <p className="text-sm" style={{ color: colors.background.offWhite }}>
-            © 2025 Almanac Research. All rights reserved.
+            © {new Date().getFullYear()} Almanac Research. All rights reserved.
           </p>
         </div>
 
         <div className="flex flex-col items-end sm:items-end text-sm">
-          <div className="flex flex-wrap justify-center sm:justify-end  gap-4 mb-3">
+          <div className="flex flex-wrap justify-center sm:justify-end gap-4 mb-3">
             <a href="/privacy-policy" className="hover:underline">
               Privacy Policy
             </a>

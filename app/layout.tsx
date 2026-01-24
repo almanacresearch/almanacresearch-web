@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import { Providers } from "./providers";
+import { getServerUser } from "@/lib/auth/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,11 +24,14 @@ export const metadata: Metadata = {
   description: "Almanac Research",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch user from session cookie on server
+  const user = await getServerUser();
+
   return (
     <html lang="en">
       <head>
@@ -48,7 +53,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
       >
-        {children}
+        <Providers initialUser={user}>{children}</Providers>
       </body>
     </html>
   );

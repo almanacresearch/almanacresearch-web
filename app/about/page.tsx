@@ -1,10 +1,17 @@
 "use client";
 
 import { motion } from "motion/react";
-import { AnimatedBackground } from "@/components/ui/animated-background";
+import { AnimatedBackground } from "@/components/ui/client-components";
 import { BackLink } from "@/components/ui/back-link";
 import { WriteToUsForm } from "@/components/forms/write-to-us-form";
 import { colors, gradients, rgba } from "@/lib/constants/theme";
+import {
+  fadeInHero,
+  fadeIn,
+  fadeInUpViewportOnce,
+  fadeInLeftViewportOnce,
+  fadeInRightViewportOnce,
+} from "@/lib/constants/animations";
 
 export default function AboutUs() {
   return (
@@ -17,18 +24,11 @@ export default function AboutUs() {
         <AnimatedBackground variant="simple" />
 
         <div className="max-w-6xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="text-center"
-          >
+          <motion.div {...fadeInHero} className="text-center">
             <motion.p
               className="text-sm tracking-[0.3em] mb-6 uppercase"
               style={{ color: colors.primary.mediumBrown }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
+              {...fadeIn}
             >
               ALMANAC RESEARCH
             </motion.p>
@@ -38,9 +38,8 @@ export default function AboutUs() {
                 color: colors.primary.darkBrown,
                 lineHeight: "1.2",
               }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.2 }}
+              {...fadeInHero}
+              transition={{ ...fadeInHero.transition, delay: 0.2 }}
             >
               Building the AI Infrastructure
               <br />
@@ -63,9 +62,7 @@ export default function AboutUs() {
       <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            {...fadeInUpViewportOnce}
             transition={{ duration: 1, delay: 0.4 }}
             className="text-center mb-12"
           >
@@ -78,22 +75,20 @@ export default function AboutUs() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            {...fadeInUpViewportOnce}
             transition={{ duration: 1, delay: 0.6 }}
             className="space-y-6 text-lg lg:text-xl leading-relaxed"
             style={{ color: colors.stone[700] }}
           >
             <p>
-              <span style={{ color: colors.stone[900] }}>Almanac Research</span>{" "}
+              <span style={{ color: colors.stone[800] }}>Almanac Research</span>{" "}
               is an AI research lab and software development company focused on
               building the next generation of artificial intelligence
               infrastructure.
             </p>
             <p>
               We're a team of researchers, engineers, and designers who believe
-              technology should quietly amplify human ability — not demand
+              technology should quietly amplify human ability - not demand
               attention, add complexity, or create noise.
             </p>
             <p>
@@ -112,13 +107,7 @@ export default function AboutUs() {
       >
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="relative"
-            >
+            <motion.div {...fadeInLeftViewportOnce} className="relative">
               <div
                 className="relative overflow-hidden rounded-3xl p-10 lg:p-12"
                 style={{
@@ -146,8 +135,8 @@ export default function AboutUs() {
                       cost.”
                     </p>
                     <p>
-                      All these apps overwhelm our day, we get consumed by
-                      meaningless notifications.
+                      Focus needs clarity. And clarity comes when you know what
+                      matters.
                     </p>
                   </div>
                 </div>
@@ -155,10 +144,7 @@ export default function AboutUs() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
+              {...fadeInRightViewportOnce}
               className="space-y-6 text-lg"
               style={{ color: colors.stone[700] }}
             >
@@ -170,21 +156,19 @@ export default function AboutUs() {
               </p>
               <p>
                 An{" "}
-                <span style={{ color: colors.stone[900] }}>
+                <span style={{ color: colors.stone[800] }}>
                   autonomous intelligence layer
                 </span>{" "}
                 that sits in the background. You don't plan - You do the work.
                 And while you are doing your most meaningful work, it quietly
-                brings together every important thing and organizes them at one
+                brings together everything important and organizes them in one
                 place.
               </p>
               <p>
                 It provides clarity in chaos, structure in ambiguity, and focus
                 in distraction.
               </p>
-              <p className="text-xl italic">
-                Just you, doing your best work. AlmanacAI handles the rest.
-              </p>
+              <p>Just you, doing your best work. AlmanacAI handles the rest.</p>
             </motion.div>
           </div>
         </div>
@@ -193,12 +177,7 @@ export default function AboutUs() {
       {/* Core Principles - Horizontal List */}
       <section className="py-32 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-20"
-          >
+          <motion.div {...fadeInUpViewportOnce} className="text-center mb-20">
             <h2
               className="text-4xl lg:text-5xl mb-6"
               style={{ color: colors.primary.darkBrown }}
@@ -208,10 +187,8 @@ export default function AboutUs() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
+            {...fadeInUpViewportOnce}
+            transition={{ ...fadeInUpViewportOnce.transition, delay: 0.2 }}
             className="grid md:grid-cols-2 lg:grid-cols-4 gap-12"
           >
             {/* Principle 1 */}
@@ -224,7 +201,7 @@ export default function AboutUs() {
                   background: gradients.divider.toBottom,
                 }}
               ></div>
-              <h3 className="text-xl mb-3" style={{ color: colors.stone[900] }}>
+              <h3 className="text-xl mb-3" style={{ color: colors.stone[800] }}>
                 Complete Transparency
               </h3>
               <p
@@ -245,7 +222,7 @@ export default function AboutUs() {
                   background: gradients.divider.toBottomAlt1,
                 }}
               ></div>
-              <h3 className="text-xl mb-3" style={{ color: colors.stone[900] }}>
+              <h3 className="text-xl mb-3" style={{ color: colors.stone[800] }}>
                 Customer First
               </h3>
               <p
@@ -267,7 +244,7 @@ export default function AboutUs() {
                   background: gradients.divider.toBottomAlt2,
                 }}
               ></div>
-              <h3 className="text-xl mb-3" style={{ color: colors.stone[900] }}>
+              <h3 className="text-xl mb-3" style={{ color: colors.stone[800] }}>
                 Highest Quality
               </h3>
               <p
@@ -288,14 +265,14 @@ export default function AboutUs() {
                   background: gradients.divider.toBottomAlt3,
                 }}
               ></div>
-              <h3 className="text-xl mb-3" style={{ color: colors.stone[900] }}>
+              <h3 className="text-xl mb-3" style={{ color: colors.stone[800] }}>
                 Privacy-by-Design
               </h3>
               <p
                 className="leading-relaxed"
                 style={{ color: colors.stone[700] }}
               >
-                Privacy isn't a setting — it's the architecture.
+                Privacy isn't a setting, it's the architecture.
               </p>
             </div>
           </motion.div>
@@ -319,12 +296,7 @@ export default function AboutUs() {
         </div>
 
         <div className="max-w-4xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <motion.div {...fadeInUpViewportOnce} className="text-center mb-12">
             <h2
               className="text-4xl lg:text-6xl mb-6"
               style={{ color: colors.primary.darkBrown }}
@@ -352,10 +324,8 @@ export default function AboutUs() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
+            {...fadeInUpViewportOnce}
+            transition={{ ...fadeInUpViewportOnce.transition, delay: 0.2 }}
           >
             <WriteToUsForm />
           </motion.div>
@@ -365,12 +335,7 @@ export default function AboutUs() {
       {/* Contact Section - Simple Email */}
       <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center"
-          >
+          <motion.div {...fadeInUpViewportOnce} className="text-center">
             <h2
               className="text-4xl lg:text-5xl mb-8"
               style={{ color: colors.primary.darkBrown }}

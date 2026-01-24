@@ -1,150 +1,200 @@
-import { Menu, X } from "lucide-react";
-import { useRef, useEffect, useState } from "react";
+"use client";
+
+import { Menu, X, ChevronDown } from "lucide-react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { colors } from "@/lib/constants/theme";
+import { UserProfileMenu } from "@/components/ui/user-profile-menu";
+
+const NAV_LINKS = [
+  {
+    href: "/coming-soon?title=Pricing&description=We're finalizing our pricing plans to offer the best value for individuals and teams. Check back soon!",
+    label: "Pricing",
+  },
+  { href: "/enterprise", label: "Enterprise" },
+  { href: "https://docs.almanacresearch.com", label: "Docs", external: true },
+];
+
+const RESOURCE_LINKS = [
+  { href: "/blog", label: "Blog" },
+  { href: "/about", label: "About Us" },
+  { href: "/careers", label: "We're Hiring!" },
+];
 
 export function Nav() {
   const menuRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isResourcesOpen, setIsResourcesOpen] = useState(false);
   const [isMobileResourcesOpen, setIsMobileResourcesOpen] = useState(false);
   const [isDarkBackground, setIsDarkBackground] = useState(true);
 
+  const closeMobileMenu = useCallback(() => {
+    setIsMenuOpen(false);
+    setIsMobileResourcesOpen(false);
+  }, []);
+
+  const toggleMobileMenu = useCallback(() => {
+    if (isMenuOpen) {
+      closeMobileMenu();
+    } else {
+      setIsMenuOpen(true);
+    }
+  }, [isMenuOpen, closeMobileMenu]);
+
+  // Click outside handler
   useEffect(() => {
     function handleClickOutside(e: MouseEvent | TouchEvent) {
-      if (!menuRef.current) return;
-
-      if (!menuRef.current.contains(e.target as Node)) {
-        setIsMenuOpen(false);
+      const target = e.target as HTMLElement;
+      if (navRef.current?.contains(target)) return;
+      if (menuRef.current && !menuRef.current.contains(target)) {
+        closeMobileMenu();
       }
     }
 
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("touchstart", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("touchstart", handleClickOutside);
     };
-  }, [isMenuOpen]);
+  }, [closeMobileMenu]);
 
+  // Detect theme from data-navbar-theme sections
   useEffect(() => {
-    function handleScroll() {
-      const heroHeight = window.innerHeight * 0.6;
-      const scrollPosition = window.scrollY;
-
-      setIsDarkBackground(scrollPosition < heroHeight);
+    const sections = document.querySelectorAll("[data-navbar-theme]");
+    if (sections.length === 0) {
+      setIsDarkBackground(true);
+      return;
     }
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setIsDarkBackground(
+              entry.target.getAttribute("data-navbar-theme") === "dark",
+            );
+            break;
+          }
+        }
+      },
+      { rootMargin: "-64px 0px -95% 0px", threshold: 0 },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    // Initial check
+    for (const section of sections) {
+      const rect = section.getBoundingClientRect();
+      if (rect.top <= 80 && rect.bottom > 64) {
+        setIsDarkBackground(
+          section.getAttribute("data-navbar-theme") === "dark",
+        );
+        break;
+      }
+    }
+
+    return () => observer.disconnect();
   }, []);
+
+  const textColor = isDarkBackground ? "text-amber-50" : "text-amber-900";
+  const hoverColor = isDarkBackground
+    ? "hover:text-amber-100"
+    : "hover:text-amber-900";
+  const variant = isDarkBackground ? "dark" : "light";
+
   return (
     <>
       <nav
-        className="flex justify-between items-center px-4 md:px-10 py-4 border-neutral-200 backdrop-blur-md fixed top-0 left-0 right-0 z-50"
-        style={{ backgroundColor: `${colors.background.cream}5` }}
+        ref={navRef}
+        className="flex justify-between items-center px-4 md:px-10 py-4 border-neutral-200 backdrop-blur-md fixed top-0 left-0 right-0 z-50 transition-colors duration-200"
+        style={{ backgroundColor: "transparent" }}
       >
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center justify-between w-full">
           <div className="flex items-center space-x-12">
-            <h1
-              className={`text-xl font-bold ${isDarkBackground ? "text-amber-50" : "text-amber-900"}`}
-            >
+            <h1 className={`text-xl font-bold ${textColor}`}>
               ALMANAC RESEARCH
             </h1>
+
             <div className="flex items-center space-x-8 font-medium">
+              {/* Resources Dropdown */}
               <div className="group relative inline-block">
                 <button
-                  className={`${isDarkBackground ? "hover:text-amber-100 text-amber-50" : "hover:text-amber-900 text-amber-900"} transition flex items-center gap-2`}
+                  className={`${hoverColor} ${textColor} transition flex items-center gap-2`}
                   onMouseEnter={() => setIsResourcesOpen(true)}
                   onMouseLeave={() => setIsResourcesOpen(false)}
+                  aria-expanded={isResourcesOpen}
+                  aria-haspopup="true"
                 >
                   Resources
-                  <motion.svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 transition-transform group-hover:rotate-180"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <motion.path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </motion.svg>
+                  <ChevronDown className="h-4 w-4 transition-transform group-hover:rotate-180" />
                 </button>
-                {/* Dropdown menu */}
+
                 {isResourcesOpen && (
                   <div
                     className="absolute left-0 z-10 bg-white border border-neutral-200 rounded-lg shadow-md mt-0 w-48 overflow-hidden"
                     onMouseEnter={() => setIsResourcesOpen(true)}
                     onMouseLeave={() => setIsResourcesOpen(false)}
                   >
-                    <a
-                      href="/blog"
-                      className="block px-4 py-2 hover:bg-neutral-50 hover:text-amber-900"
-                    >
-                      Blog
-                    </a>
-                    <a
-                      href="/coming-soon?title=Pricing&description=We're finalizing our pricing plans to offer the best value for individuals and teams. Check back soon!"
-                      className="block px-4 py-2 hover:bg-neutral-50 hover:text-amber-900"
-                    >
-                      Pricing
-                    </a>
-                    <a
-                      href="/enterprise"
-                      className="block px-4 py-2 hover:bg-neutral-50 hover:text-amber-900"
-                    >
-                      Enterprise
-                    </a>
+                    {RESOURCE_LINKS.map((link) => (
+                      <a
+                        key={link.href}
+                        href={link.href}
+                        className="block px-4 py-2 hover:bg-neutral-50 hover:text-amber-900"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
                   </div>
                 )}
               </div>
-              <a
-                href="/about"
-                className={`${isDarkBackground ? "hover:text-amber-100 text-amber-50" : "hover:text-amber-900 text-amber-900"} transition`}
-              >
-                About Us
-              </a>
-              <a
-                href="/careers"
-                className={`${isDarkBackground ? "hover:text-amber-100 text-amber-50" : "hover:text-amber-900 text-amber-900"} transition`}
-              >
-                We're Hiring!
-              </a>
+
+              {/* Nav Links */}
+              {NAV_LINKS.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className={`${hoverColor} ${textColor} transition`}
+                  {...(link.external && {
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                  })}
+                >
+                  {link.label}
+                </a>
+              ))}
             </div>
           </div>
+
+          <UserProfileMenu variant={variant} />
         </div>
 
-        {/* Mobile Logo & Menu Button */}
+        {/* Mobile Header */}
         <div className="md:hidden flex items-center justify-between w-full">
-          <h1
-            className={`text-xl font-bold ${isDarkBackground ? "text-amber-50" : "text-amber-900"}`}
-          >
-            ALMANAC RESEARCH
-          </h1>
+          <h1 className={`text-xl font-bold ${textColor}`}>ALMANAC RESEARCH</h1>
+
           <div className="flex items-center gap-4">
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <UserProfileMenu variant={variant} />
+
+            <button
+              onClick={toggleMobileMenu}
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
+            >
               {isMenuOpen ? (
-                <X
-                  className={`h-6 w-6 ${isDarkBackground ? "text-amber-50" : "text-amber-900"}`}
-                />
+                <X className={`h-6 w-6 ${textColor}`} />
               ) : (
-                <Menu
-                  className={`h-6 w-6 ${isDarkBackground ? "text-amber-50" : "text-amber-900"}`}
-                />
+                <Menu className={`h-6 w-6 ${textColor}`} />
               )}
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation Menu */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -160,32 +210,26 @@ export function Nav() {
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
             <nav className="flex flex-col space-y-4 px-10 py-6">
-              {/* Resources with Dropdown in Mobile */}
+              {/* Mobile Resources Dropdown */}
               <div>
                 <button
                   className="flex items-center hover:text-amber-900 transition-colors w-full font-medium"
                   onClick={() =>
                     setIsMobileResourcesOpen(!isMobileResourcesOpen)
                   }
+                  aria-expanded={isMobileResourcesOpen}
+                  aria-haspopup="true"
                 >
                   Resources
-                  <motion.svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 ml-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                  <motion.div
                     animate={{ rotate: isMobileResourcesOpen ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
+                    className="ml-2"
                   >
-                    <motion.path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </motion.svg>
+                    <ChevronDown className="h-4 w-4" />
+                  </motion.div>
                 </button>
+
                 <AnimatePresence>
                   {isMobileResourcesOpen && (
                     <motion.div
@@ -195,41 +239,36 @@ export function Nav() {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.2, ease: "easeInOut" }}
                     >
-                      <a
-                        href="/blog"
-                        className="block py-2 text-neutral-700 hover:text-amber-900"
-                      >
-                        Blog
-                      </a>
-                      <a
-                        href="/coming-soon?title=Pricing&description=We're finalizing our pricing plans to offer the best value for individuals and teams. Check back soon!"
-                        className="block py-2 text-neutral-700 hover:text-amber-900"
-                      >
-                        Pricing
-                      </a>
-                      <a
-                        href="/enterprise"
-                        className="block py-2 text-neutral-700 hover:text-amber-900"
-                      >
-                        Enterprise
-                      </a>
+                      {RESOURCE_LINKS.map((link) => (
+                        <a
+                          key={link.href}
+                          href={link.href}
+                          className="block py-2 text-neutral-700 hover:text-amber-900"
+                          onClick={closeMobileMenu}
+                        >
+                          {link.label}
+                        </a>
+                      ))}
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
 
-              <a
-                href="/about"
-                className="hover:text-amber-900 transition font-medium"
-              >
-                About Us
-              </a>
-              <a
-                href="/careers"
-                className="hover:text-amber-900 transition font-medium"
-              >
-                We're Hiring!
-              </a>
+              {/* Mobile Nav Links */}
+              {NAV_LINKS.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="hover:text-amber-900 transition font-medium"
+                  onClick={() => !link.external && closeMobileMenu()}
+                  {...(link.external && {
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                  })}
+                >
+                  {link.label}
+                </a>
+              ))}
             </nav>
           </motion.div>
         )}
