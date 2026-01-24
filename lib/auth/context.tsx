@@ -29,8 +29,7 @@ export function UserProvider({
   initialUser = null,
 }: UserProviderProps) {
   const [user, setUser] = useState<User | null>(initialUser);
-  const [isLoading, setIsLoading] = useState(!initialUser);
-
+  const [isLoading, setIsLoading] = useState(false);
   const refreshUser = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -40,13 +39,6 @@ export function UserProvider({
       setIsLoading(false);
     }
   }, []);
-
-  // Fetch user on mount if no initialUser provided
-  useEffect(() => {
-    if (!initialUser) {
-      refreshUser();
-    }
-  }, [initialUser, refreshUser]);
 
   // Listen for auth success events (e.g., after OAuth callback)
   useEffect(() => {
