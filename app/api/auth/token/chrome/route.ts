@@ -42,12 +42,15 @@ export async function GET() {
     return NextResponse.json({ error: "Invalid session" }, { status: 401 });
   }
 
+  const issuer = process.env.NEXT_PUBLIC_BASE_URL || "https://www.almanacresearch.com";
+
   const token = createExtensionToken({
     userId: session.userId,
     email: session.email,
     name: session.name,
     picture: session.picture,
     invited: session.invited,
+    iss: issuer,
     aud: `chrome-extension://${EXTENSION_ID}`,
   });
 
