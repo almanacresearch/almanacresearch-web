@@ -11,7 +11,7 @@ function welcomeEmailHTML(name: string): string {
 
   const body = [
     emailParagraph(
-      `AlmanacAI Mail, our invite-only MVP, goes live on <b>January 27, 2026</b>.`
+      `AlmanacAI Mail, our invite-only MVP, goes live on <b>February 02, 2026</b>.`
     ),
     emailParagraph(
       `If you have an invite code, you can download the Chrome extension and try it out right away. If you don't, you can request an invite code ${emailLink(

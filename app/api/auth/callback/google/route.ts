@@ -13,6 +13,7 @@ import {
 } from "@/lib/auth/cookies";
 import { dbUserToPublic } from "@/lib/auth/types";
 import { sendWelcomeEmail } from "@/lib/email/welcome";
+import { triggerNewUserQueue } from "@/lib/aws/lambda";
 
 function createErrorRedirect(request: NextRequest, error: string) {
   const url = new URL("/", request.nextUrl.origin);
@@ -74,9 +75,12 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    // Send welcome email for new users
-    if (isNewUser && userInfo.email) {
-      sendWelcomeEmail(userInfo.email, userInfo.name);
+    // Send welcome email and trigger queue for new users
+    if (isNewUser) {
+      if (userInfo.email) {
+        sendWelcomeEmail(userInfo.email, userInfo.name);
+      }
+      triggerNewUserQueue(dbUser.id);
     }
 
     // Create response that closes popup and notifies parent window
