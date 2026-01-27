@@ -34,7 +34,7 @@ export function AlmanacaiMailAccess({
           color: isDark ? colors.stone[200] : colors.primary.darkBrown,
         }}
       >
-        AlmanacAI Mail - Launching <b>January 27, 2026</b>
+        AlmanacAI Mail - Launching <b>February 02, 2026</b>
       </p>
       {user ? (
         <a
