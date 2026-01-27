@@ -8,7 +8,6 @@ import { UserProfileMenu } from "@/components/ui/user-profile-menu";
 
 const NAV_LINKS = [
   { href: "/about", label: "About Us" },
-  { href: "/careers", label: "We're Hiring!" },
   { href: "https://docs.almanacresearch.com", label: "Docs", external: true },
 ];
 
