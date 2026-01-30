@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { verifySessionToken } from "@/lib/auth/session";
 import { AUTH_COOKIES } from "@/lib/auth/cookies";
+import { getUserById } from "@/lib/db/users";
 
 const EXTENSION_ID = process.env.CHROME_EXTENSION_ID;
 const EXTENSION_TOKEN_SECRET = process.env.EXTENSION_TOKEN_SECRET;
@@ -42,14 +43,20 @@ export async function GET() {
     return NextResponse.json({ error: "Invalid session" }, { status: 401 });
   }
 
-  const issuer = process.env.NEXT_PUBLIC_BASE_URL || "https://www.almanacresearch.com";
+  const dbUser = await getUserById(session.userId);
+  if (!dbUser) {
+    return NextResponse.json({ error: "User not found" }, { status: 401 });
+  }
+
+  const issuer =
+    process.env.NEXT_PUBLIC_BASE_URL || "https://www.almanacresearch.com";
 
   const token = createExtensionToken({
-    userId: session.userId,
-    email: session.email,
-    name: session.name,
-    picture: session.picture,
-    invited: session.invited,
+    userId: dbUser.id,
+    email: dbUser.primary_email,
+    name: dbUser.name,
+    picture: dbUser.picture,
+    invited: dbUser.invited,
     iss: issuer,
     aud: `chrome-extension://${EXTENSION_ID}`,
   });
