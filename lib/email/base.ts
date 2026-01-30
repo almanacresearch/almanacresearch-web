@@ -1,27 +1,17 @@
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+import * as postmark from "postmark";
 
-let sesClient: SESClient | null = null;
+let postmarkClient: postmark.ServerClient | null = null;
 
-export function getSESClient(): SESClient | null {
-  if (sesClient) return sesClient;
+function getPostmarkClient(): postmark.ServerClient | null {
+  if (postmarkClient) return postmarkClient;
 
-  if (
-    !process.env.AWS_ACCESS_KEY_ID ||
-    !process.env.AWS_SECRET_ACCESS_KEY ||
-    !process.env.AWS_SES_REGION
-  ) {
+  const serverToken = process.env.POSTMARK_SERVER_TOKEN;
+  if (!serverToken) {
     return null;
   }
 
-  sesClient = new SESClient({
-    region: process.env.AWS_SES_REGION,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    },
-  });
-
-  return sesClient;
+  postmarkClient = new postmark.ServerClient(serverToken);
+  return postmarkClient;
 }
 
 export function getFirstName(name: string): string {
@@ -90,33 +80,23 @@ export interface SendEmailOptions {
 }
 
 export function sendEmail(options: SendEmailOptions): void {
-  const client = getSESClient();
+  const client = getPostmarkClient();
   if (!client) return;
 
   const fromEmail =
-    process.env.AWS_SES_FROM_EMAIL || "hello@almanacresearch.com";
-
-  const command = new SendEmailCommand({
-    Source: `Almanac Research <${fromEmail}>`,
-    Destination: {
-      ToAddresses: [options.to],
-    },
-    Message: {
-      Subject: {
-        Data: options.subject,
-        Charset: "UTF-8",
-      },
-      Body: {
-        Html: {
-          Data: options.html,
-          Charset: "UTF-8",
-        },
-      },
-    },
-  });
+    process.env.POSTMARK_FROM_EMAIL || "hello@almanacresearch.com";
 
   // Send email in background (fire and forget)
-  client.send(command).catch(() => {
-    // Silently fail - don't block the caller
-  });
+  client
+    .sendEmail({
+      From: `Almanac Research <${fromEmail}>`,
+      To: options.to,
+      Subject: options.subject,
+      HtmlBody: options.html,
+      MessageStream: "outbound",
+    })
+    .catch((error) => {
+      console.error("Failed to send email:", error);
+      // Silently fail - don't block the caller
+    });
 }
