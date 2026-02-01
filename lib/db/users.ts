@@ -280,3 +280,31 @@ export async function hasRequiredChromeScopes(userId: string): Promise<boolean> 
   const userScopes = data.scopes || [];
   return requiredScopes.every((scope) => userScopes.includes(scope));
 }
+
+export async function upsertGmailWatch(
+  userId: string,
+  historyId: string,
+  expiration: Date
+): Promise<boolean> {
+  const watchStartedAt = new Date().toISOString();
+  const watchExpiration = expiration.toISOString();
+
+  const { error } = await supabase
+    .from("google_push_notification")
+    .upsert(
+      {
+        user_id: userId,
+        historyId: historyId,
+        watch_started_at: watchStartedAt,
+        watch_expiration: watchExpiration,
+      },
+      { onConflict: "user_id" }
+    );
+
+  if (error) {
+    console.error("Failed to store Gmail watch info:", error);
+    return false;
+  }
+
+  return true;
+}

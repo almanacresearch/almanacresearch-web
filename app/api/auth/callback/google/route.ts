@@ -14,6 +14,9 @@ import {
 import { dbUserToPublic } from "@/lib/auth/types";
 import { sendWelcomeEmail } from "@/lib/email/welcome";
 import { triggerNewUserQueue } from "@/lib/aws/lambda";
+import { startGmailWatch } from "@/lib/google/gmail";
+
+const GMAIL_SCOPE = "https://www.googleapis.com/auth/gmail.readonly";
 
 function createErrorRedirect(request: NextRequest, error: string) {
   const url = new URL("/", request.nextUrl.origin);
@@ -75,12 +78,17 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    // Send welcome email and trigger queue for new users
-    if (isNewUser) {
-      if (userInfo.email) {
-        sendWelcomeEmail(userInfo.email, userInfo.name);
-      }
+    // Send welcome email for new users
+    if (isNewUser && userInfo.email) {
+      sendWelcomeEmail(userInfo.email, userInfo.name);
+    }
+
+    // Trigger queue and start Gmail watch when Gmail access is granted
+    const grantedScopes = tokens.scope?.split(" ") || [];
+    const hasGmailAccess = grantedScopes.includes(GMAIL_SCOPE);
+    if (hasGmailAccess) {
       triggerNewUserQueue(dbUser.id);
+      startGmailWatch(dbUser.id, tokens.access_token);
     }
 
     const isChromeExtensionFlow = redirectPath.includes("/api/auth/token/chrome");
