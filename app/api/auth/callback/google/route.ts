@@ -83,7 +83,19 @@ export async function GET(request: NextRequest) {
       triggerNewUserQueue(dbUser.id);
     }
 
-    // Create response that closes popup and notifies parent window
+    const isChromeExtensionFlow = redirectPath.includes("/api/auth/token/chrome");
+    
+    if (isChromeExtensionFlow) {
+      const redirectUrl = new URL(redirectPath, request.nextUrl.origin);
+      redirectUrl.searchParams.set("user_id", dbUser.id);
+      
+      const response = NextResponse.redirect(redirectUrl);
+      clearOAuthCookies(response);
+      
+      return response;
+    }
+
+    // Create response that closes popup and notifies parent window (for webapp)
     const html = `
       <!DOCTYPE html>
       <html>
