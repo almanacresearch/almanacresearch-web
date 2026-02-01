@@ -21,8 +21,6 @@ export async function triggerNewUserQueue(userId: string): Promise<void> {
       );
       return;
     }
-
-    console.log(`New user enqueued successfully: ${userId}`);
   } catch (error) {
     console.error("Failed to trigger new user queue:", error);
   }
