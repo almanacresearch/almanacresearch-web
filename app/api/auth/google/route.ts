@@ -4,10 +4,6 @@ import { AUTH_COOKIES, OAUTH_COOKIE_MAX_AGE } from "@/lib/auth/cookies";
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 const BASE_SCOPES = ["openid", "email", "profile"];
-const GMAIL_SCOPES = [
-  "https://www.googleapis.com/auth/gmail.readonly",
-  "https://www.googleapis.com/auth/calendar.readonly",
-];
 const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL || "https://www.almanacresearch.com";
 
@@ -21,16 +17,12 @@ function generateState(): string {
 
 /**
  * GET /api/auth/google?returnUrl=/some/path
+ * Webapp OAuth entry point. Basic scopes only.
  */
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const returnUrl = searchParams.get("returnUrl") || "/";
-  const source = searchParams.get("source");
-
-  // Add Gmail scopes for Chrome extension
-  const scopes = source === "chrome" 
-    ? [...BASE_SCOPES, ...GMAIL_SCOPES] 
-    : BASE_SCOPES;
+  const prompt = searchParams.get("prompt");
 
   const state = generateState();
   const redirectUri = `${BASE_URL}/api/auth/callback/google`;
@@ -39,11 +31,13 @@ export async function GET(request: NextRequest) {
     client_id: GOOGLE_CLIENT_ID,
     redirect_uri: redirectUri,
     response_type: "code",
-    scope: scopes.join(" "),
+    scope: BASE_SCOPES.join(" "),
     state: state,
     access_type: "offline",
-    prompt: "select_account",
   });
+  if (prompt === "select_account") {
+    params.set("prompt", "select_account");
+  }
 
   const authUrl = `${GOOGLE_AUTH_URL}?${params.toString()}`;
 

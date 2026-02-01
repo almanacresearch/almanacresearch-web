@@ -259,3 +259,24 @@ export async function deleteUserAccount(
     return { success: false, error: "Failed to delete account" };
   }
 }
+
+export async function hasRequiredChromeScopes(userId: string): Promise<boolean> {
+  const requiredScopes = [
+    "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/calendar.readonly",
+  ];
+
+  const { data, error } = await supabase
+    .from("oauth_tokens")
+    .select("scopes")
+    .eq("user_id", userId)
+    .eq("provider", "google_gmail")
+    .single();
+
+  if (error || !data) {
+    return false;
+  }
+
+  const userScopes = data.scopes || [];
+  return requiredScopes.every((scope) => userScopes.includes(scope));
+}
