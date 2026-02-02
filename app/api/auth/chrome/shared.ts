@@ -45,10 +45,14 @@ export async function handleChromeAuth(
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get(AUTH_COOKIES.SESSION)?.value;
 
+  let userEmail: string | null = null;
+
   // Check if user has existing session (and not forcing new account)
   if (sessionToken && promptParam !== "select_account") {
     const session = verifySessionToken(sessionToken);
     if (session) {
+      userEmail = session.email || null;
+      
       // For signin: just check session exists
       // For start: also check if user already has Gmail scopes
       const canSkipOAuth = options.requestGmailScopes
@@ -86,6 +90,10 @@ export async function handleChromeAuth(
   // Only show account picker if user explicitly wants different account
   if (promptParam === "select_account") {
     params.set("prompt", "select_account");
+  } else if (userEmail) {
+    // User has existing session - pre-select their account to skip account picker
+    // This is useful when requesting additional scopes (Gmail/Calendar)
+    params.set("login_hint", userEmail);
   }
 
   const authUrl = `${GOOGLE_AUTH_URL}?${params.toString()}`;

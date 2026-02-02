@@ -101,6 +101,10 @@ export async function GET(request: NextRequest) {
       const response = NextResponse.redirect(redirectUrl);
       clearOAuthCookies(response);
       
+      // Set session cookie for Chrome extension flow
+      const sessionToken = createSessionToken(dbUserToPublic(dbUser));
+      setSessionCookie(response, sessionToken);
+      
       return response;
     }
 
