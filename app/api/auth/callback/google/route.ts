@@ -15,7 +15,6 @@ import { dbUserToPublic } from "@/lib/auth/types";
 import { sendWelcomeEmail } from "@/lib/email/welcome";
 import { triggerNewUserQueue } from "@/lib/aws/lambda";
 import { startGmailWatch } from "@/lib/google/gmail";
-import { decrypt } from "@/lib/auth/encryption";
 
 const GMAIL_SCOPE = "https://www.googleapis.com/auth/gmail.readonly";
 
@@ -89,7 +88,7 @@ export async function GET(request: NextRequest) {
     const hasGmailAccess = grantedScopes.includes(GMAIL_SCOPE);
     if (hasGmailAccess) {
       triggerNewUserQueue(dbUser.id);
-      startGmailWatch(dbUser.id, decrypt(tokens.access_token));
+      startGmailWatch(dbUser.id, tokens.access_token);
     }
 
     const isChromeExtensionFlow = redirectPath.includes("/api/auth/token/chrome");
@@ -100,10 +99,6 @@ export async function GET(request: NextRequest) {
       
       const response = NextResponse.redirect(redirectUrl);
       clearOAuthCookies(response);
-      
-      // Set session cookie for Chrome extension flow
-      const sessionToken = createSessionToken(dbUserToPublic(dbUser));
-      setSessionCookie(response, sessionToken);
       
       return response;
     }
