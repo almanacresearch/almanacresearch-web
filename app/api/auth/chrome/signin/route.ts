@@ -12,4 +12,3 @@ export async function GET(request: NextRequest) {
     requestGmailScopes: false,
   });
 }
-
