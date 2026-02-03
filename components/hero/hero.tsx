@@ -10,10 +10,11 @@ export function Hero() {
   return (
     <section
       data-navbar-theme="dark"
-      className={"relative pt-32 pb-20 overflow-hidden"}
+      className="relative pb-20 overflow-hidden"
       style={{
         background:
           "linear-gradient(135deg, #1c1917 0%, #78350f 50%, #1c1917 100%)",
+        paddingTop: "calc(var(--announcement-banner-height, 0px) + 128px)",
       }}
     >
       <AnimatedBackground variant="hero" />
