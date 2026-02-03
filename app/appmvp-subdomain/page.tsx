@@ -137,7 +137,7 @@ export default function AppMvpSubdomainHome() {
 
           {/* Launching Soon */}
           <motion.p
-            className="text-xl lg:text-2xl mb-6 text-center"
+            className="text-xl lg:text-2xl mb-20 text-center"
             style={{ color: colors.stone[600] }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
