@@ -34,44 +34,25 @@ export function AlmanacaiMailAccess({
           color: isDark ? colors.stone[200] : colors.primary.darkBrown,
         }}
       >
-        AlmanacAI Mail - Launching <b>February 02, 2026</b>
+        AlmanacAI Mail - Launching Soon
       </p>
-      {user ? (
+      <p
+        className="text-sm sm:text-base"
+        style={{
+          color: isDark ? "rgba(255, 250, 240, 0.8)" : colors.stone[700],
+        }}
+      >
         <a
           href={appUrl}
-          className="text-sm sm:text-base inline-flex items-center gap-1 transition-transform duration-200 hover:scale-105"
+          className="font-semibold inline-flex items-center gap-1 transition-transform duration-200 hover:scale-105"
           style={{
-            color: isDark ? "rgba(255, 250, 240, 0.8)" : colors.stone[700],
+            color: isDark ? colors.stone[200] : colors.primary.darkBrown,
           }}
         >
-          Get started{" "}
-          <ArrowRight
-            className="w-4 h-4 ml-1"
-            style={{
-              color: isDark ? colors.stone[200] : colors.primary.darkBrown,
-            }}
-            aria-hidden="true"
-          />
+          Learn more
+          <ArrowRight className="w-4 h-4" aria-hidden="true" />
         </a>
-      ) : (
-        <p
-          className="text-sm sm:text-base inline-flex items-center gap-1"
-          style={{
-            color: isDark ? "rgba(255, 250, 240, 0.8)" : colors.stone[700],
-          }}
-        >
-          <button
-            onClick={() => signInWithGoogle(appUrl)}
-            className="cursor-pointer font-semibold underline-offset-2 transition-all duration-200 hover:scale-105"
-            style={{
-              color: isDark ? colors.stone[200] : colors.primary.darkBrown,
-            }}
-          >
-            Sign in
-          </button>
-          <span> and get started!</span>
-        </p>
-      )}
+      </p>
     </div>
   );
 }

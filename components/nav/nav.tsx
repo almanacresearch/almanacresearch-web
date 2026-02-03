@@ -98,8 +98,8 @@ export function Nav() {
     <>
       <nav
         ref={navRef}
-        className="flex justify-between items-center px-4 md:px-10 py-4 border-neutral-200 backdrop-blur-md fixed top-0 left-0 right-0 z-50 transition-colors duration-200"
-        style={{ backgroundColor: "transparent" }}
+        className="flex justify-between items-center px-4 md:px-10 py-4 border-neutral-200 backdrop-blur-md fixed left-0 right-0 z-50 transition-all duration-200"
+        style={{ backgroundColor: "transparent", top: "var(--announcement-banner-height, 0px)" }}
       >
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center justify-between w-full">
