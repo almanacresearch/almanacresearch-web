@@ -95,10 +95,10 @@ export function Nav() {
   const variant = isDarkBackground ? "dark" : "light";
 
   return (
-    <>
+    <div className="relative">
       <nav
         ref={navRef}
-        className="flex justify-between items-center px-4 md:px-10 py-4 border-neutral-200 backdrop-blur-md fixed left-0 right-0 z-50 transition-all duration-200"
+        className="flex justify-between items-center px-4 md:px-10 py-4 border-neutral-200 backdrop-blur-md fixed left-0 right-0 z-50"
         style={{ backgroundColor: "transparent", top: "var(--announcement-banner-height, 0px)" }}
       >
         {/* Desktop Navigation */}
@@ -190,7 +190,7 @@ export function Nav() {
             ref={menuRef}
             className="md:hidden fixed left-0 right-0 z-40 backdrop-blur-md border-b border-neutral-200 overflow-hidden"
             style={{
-              top: "60px",
+              top: "calc(var(--announcement-banner-height, 0px) + 64px)",
               backgroundColor: `${colors.background.cream}F2`,
             }}
             initial={{ height: 0, opacity: 0 }}
@@ -262,6 +262,6 @@ export function Nav() {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 }

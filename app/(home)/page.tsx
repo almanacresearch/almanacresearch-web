@@ -6,7 +6,8 @@ import { AnnouncementBanner } from "@/components/ui/announcement-banner";
 // Constants
 import { colors } from "@/lib/constants/theme";
 
-const ANNOUNCEMENT_MESSAGE = "We're completing final compliance and verification checks before launching our MVP. This helps ensure a safe and reliable experience for everyone. We'll share the new launch date shortly.";
+const ANNOUNCEMENT_MESSAGE =
+  "We're completing final compliance and verification checks before launching our MVP. This helps ensure a safe and reliable experience for everyone. We'll share the new launch date shortly.";
 
 export default function Home() {
   return (
@@ -17,7 +18,7 @@ export default function Home() {
         color: colors.stone[800],
       }}
     >
-      {/* Announcement Banner */}
+      {/* Announcement Banner - at top, scrolls with content */}
       <AnnouncementBanner message={ANNOUNCEMENT_MESSAGE} />
 
       {/* Navigation */}

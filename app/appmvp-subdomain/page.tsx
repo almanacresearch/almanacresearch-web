@@ -105,7 +105,10 @@ export default function AppMvpSubdomainHome() {
 
       {/* Header - ALMANAC RESEARCH */}
       <motion.div
-        className="relative z-10 pt-16 pb-2 text-center"
+        className="relative z-10 pb-2 text-center"
+        style={{
+          paddingTop: "calc(var(--announcement-banner-height, 0px) + 64px)",
+        }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.6 }}

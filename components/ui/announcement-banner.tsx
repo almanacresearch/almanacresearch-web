@@ -12,34 +12,28 @@ export function AnnouncementBanner({ message }: AnnouncementBannerProps) {
   const [isVisible, setIsVisible] = useState(true);
   const bannerRef = useRef<HTMLDivElement>(null);
 
+  // Set CSS variable for navbar position based on banner height (only when mounted/resized, not on scroll)
   useEffect(() => {
-    if (!isVisible) {
-      document.documentElement.style.setProperty(
-        "--announcement-banner-height",
-        "0px",
-      );
-      return;
-    }
-
-    const updateNavPosition = () => {
-      if (bannerRef.current) {
-        const rect = bannerRef.current.getBoundingClientRect();
-        // Banner height visible in viewport
-        const visibleHeight = Math.max(0, rect.bottom);
+    const updateBannerHeight = () => {
+      if (bannerRef.current && isVisible) {
+        const height = bannerRef.current.offsetHeight;
         document.documentElement.style.setProperty(
           "--announcement-banner-height",
-          `${visibleHeight}px`,
+          `${height}px`,
+        );
+      } else {
+        document.documentElement.style.setProperty(
+          "--announcement-banner-height",
+          "0px",
         );
       }
     };
 
-    updateNavPosition();
-    window.addEventListener("scroll", updateNavPosition);
-    window.addEventListener("resize", updateNavPosition);
+    updateBannerHeight();
+    window.addEventListener("resize", updateBannerHeight);
 
     return () => {
-      window.removeEventListener("scroll", updateNavPosition);
-      window.removeEventListener("resize", updateNavPosition);
+      window.removeEventListener("resize", updateBannerHeight);
     };
   }, [isVisible]);
 
@@ -48,7 +42,7 @@ export function AnnouncementBanner({ message }: AnnouncementBannerProps) {
   return (
     <div
       ref={bannerRef}
-      className="w-full py-2 px-4 text-center text-xs flex items-center justify-center relative"
+      className="w-full py-2 px-4 text-center text-xs flex items-center justify-center fixed top-0 left-0 right-0 z-[60]"
       style={{
         backgroundColor: colors.stone[800],
         color: colors.background.offWhite,
