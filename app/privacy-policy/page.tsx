@@ -89,8 +89,8 @@ export default function PrivacyPolicy() {
               </h2>
               <div className="space-y-6 text-stone-700">
                 <p className="text-lg leading-relaxed">
-                  Almanac Research only requests and processes only the data
-                  required to function - with your explicit permission.{" "}
+                  Almanac Research only requests and processes the data required
+                  to function - with your explicit permission.{" "}
                 </p>
 
                 {/* Company-Level Data */}
@@ -164,81 +164,162 @@ export default function PrivacyPolicy() {
                     {/* B. Connected Services */}
                     <div>
                       <h4 className="text-lg text-stone-900 mb-3">
-                        B. Connected Services (Gmail)
+                        B. Connected Services (Gmail & Google Calendar)
                       </h4>
-                      <p className="mb-3 leading-relaxed">
-                        When you connect Gmail using OAuth, AlmanacAI receives{" "}
-                        <strong className="text-stone-900">
-                          read-only access
-                        </strong>{" "}
-                        using{" "}
-                        <code className="bg-stone-200 px-2 py-1 rounded text-sm">
-                          gmail.readonly
-                        </code>{" "}
-                        scope to your inbox to extract actionable tasks. To do
-                        this, AlmanacAI temporarily reads:
-                      </p>
-                      <ul className="space-y-2 pl-4 mb-4">
-                        <li className="flex items-start gap-2">
-                          <span className="text-stone-400 mt-1">•</span>
-                          <span>Email subject</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-stone-400 mt-1">•</span>
-                          <span>Sender & recipient</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-stone-400 mt-1">•</span>
-                          <span>Email body</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-stone-400 mt-1">•</span>
-                          <span>Timestamps</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-stone-400 mt-1">•</span>
-                          <span>Thread metadata</span>
-                        </li>
-                      </ul>
-                      <p className="mb-3 leading-relaxed">
-                        We only store extracted, structured task data.
-                      </p>
-                      <ul className="space-y-2 pl-4 mb-4">
-                        <li className="flex items-start gap-2">
-                          <span className="text-stone-400 mt-1">•</span>
-                          <span>Task description</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-stone-400 mt-1">•</span>
-                          <span>Task type/category</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-stone-400 mt-1">•</span>
-                          <span>Due date/time</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-stone-400 mt-1">•</span>
-                          <span>Gmail message ID (reference only)</span>
-                        </li>
-                      </ul>
-                      <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r">
-                        <p className="text-stone-900 mb-2">
-                          <strong>Gmail API Scope:</strong>{" "}
+
+                      {/* Gmail Access */}
+                      <div className="mb-6">
+                        <h5 className="text-base text-stone-900 mb-2 font-medium">
+                          Gmail Access
+                        </h5>
+                        <p className="mb-3 leading-relaxed">
+                          When you connect Gmail using OAuth, AlmanacAI receives{" "}
+                          <strong className="text-stone-900">
+                            read-only access
+                          </strong>{" "}
+                          using{" "}
                           <code className="bg-stone-200 px-2 py-1 rounded text-sm">
                             gmail.readonly
-                          </code>
+                          </code>{" "}
+                          scope to your inbox to extract actionable tasks. To do
+                          this, AlmanacAI temporarily reads:
                         </p>
-                        <p className="text-sm leading-relaxed">
-                          Used only to detect tasks, identify meetings and
-                          invites, extract actionable items, and classify
-                          email-based work items.{" "}
+                        <ul className="space-y-2 pl-4 mb-4">
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>Email subject</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>Sender & recipient</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>Email body</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>Timestamps</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>Thread metadata</span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      {/* Calendar Access */}
+                      <div className="mb-6">
+                        <h5 className="text-base text-stone-900 mb-2 font-medium">
+                          Google Calendar Access
+                        </h5>
+                        <p className="mb-3 leading-relaxed">
+                          When you connect Google Calendar using OAuth,
+                          AlmanacAI receives{" "}
+                          <strong className="text-stone-900">
+                            read-only access
+                          </strong>{" "}
+                          using{" "}
+                          <code className="bg-stone-200 px-2 py-1 rounded text-sm">
+                            calendar.readonly
+                          </code>{" "}
+                          scope to view your calendar events. This allows
+                          AlmanacAI to:
+                        </p>
+                        <ul className="space-y-2 pl-4 mb-4">
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>View event titles and descriptions</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>Access event times and durations</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>See attendee information</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>Read event locations</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>
+                              Identify meeting invites and scheduling conflicts
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      {/* What We Store */}
+                      <div className="mb-4">
+                        <h5 className="text-base text-stone-900 mb-2 font-medium">
+                          What We Store
+                        </h5>
+                        <p className="mb-3 leading-relaxed">
+                          We only store extracted, structured task data:
+                        </p>
+                        <ul className="space-y-2 pl-4 mb-4">
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>Task description</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>Task type/category</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>Due date/time</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>Gmail message ID (reference only)</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-stone-400 mt-1">•</span>
+                            <span>Calendar event ID (reference only)</span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      {/* API Scopes */}
+                      <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r space-y-3">
+                        <div>
+                          <p className="text-stone-900 mb-1">
+                            <strong>Gmail API Scope:</strong>{" "}
+                            <code className="bg-stone-200 px-2 py-1 rounded text-sm">
+                              gmail.readonly
+                            </code>
+                          </p>
+                          <p className="text-sm leading-relaxed">
+                            Used only to detect tasks, identify meetings and
+                            invites, extract actionable items, and classify
+                            email-based work items.
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-stone-900 mb-1">
+                            <strong>Calendar API Scope:</strong>{" "}
+                            <code className="bg-stone-200 px-2 py-1 rounded text-sm">
+                              calendar.readonly
+                            </code>
+                          </p>
+                          <p className="text-sm leading-relaxed">
+                            Used only to view your calendar events, identify
+                            scheduling conflicts, and help organize your day
+                            around existing commitments.
+                          </p>
+                        </div>
+                        <p className="text-sm leading-relaxed pt-2 border-t border-amber-200">
                           <a
-                            href="https://developers.google.com/workspace/gmail/api/auth/scopes"
+                            href="https://developers.google.com/identity/protocols/oauth2/scopes"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-amber-900 hover:text-amber-700 underline inline-flex items-center gap-1"
                           >
-                            Learn more
+                            Learn more about Google API scopes
                             <svg
                               className="w-3 h-3"
                               fill="none"
@@ -266,6 +347,10 @@ export default function PrivacyPolicy() {
                         <li className="flex items-start gap-2">
                           <span className="text-stone-400 mt-1">•</span>
                           <span>Tasks extracted from your emails</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-stone-400 mt-1">•</span>
+                          <span>Events and meetings from your calendar</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-stone-400 mt-1">•</span>
@@ -366,7 +451,17 @@ export default function PrivacyPolicy() {
                         Provide AlmanacAI Services:
                       </strong>{" "}
                       Aggregate, organize, and present your tasks from connected
-                      applications
+                      applications including email and calendar
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-stone-400 mt-1">•</span>
+                    <span>
+                      <strong className="text-stone-900">
+                        Organize Your Schedule:
+                      </strong>{" "}
+                      Use calendar data to help you plan around existing
+                      commitments and avoid scheduling conflicts
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
