@@ -294,7 +294,7 @@ export async function upsertGmailWatch(
     .upsert(
       {
         user_id: userId,
-        historyId: historyId,
+        history_id: historyId,
         watch_started_at: watchStartedAt,
         watch_expiration: watchExpiration,
       },
