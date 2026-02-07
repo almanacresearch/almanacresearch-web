@@ -7,6 +7,33 @@ const BASE_SCOPES = ["openid", "email", "profile"];
 const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL || "https://www.almanacresearch.com";
 
+// Get the root domain for cookie sharing across subdomains
+function getCookieDomain(): string | undefined {
+  try {
+    const url = new URL(BASE_URL);
+    const hostname = url.hostname;
+
+    // For localhost, cookies are shared automatically (no domain needed)
+    if (hostname === "localhost" || hostname === "127.0.0.1") {
+      return undefined;
+    }
+
+    // For *.local domains (local dev with subdomains)
+    if (hostname.endsWith(".local")) {
+      return `.${hostname}`;
+    }
+
+    // For production domains, return root domain (e.g., ".almanacresearch.com")
+    const parts = hostname.split(".");
+    if (parts.length >= 2) {
+      return `.${parts.slice(-2).join(".")}`;
+    }
+  } catch {
+    return undefined;
+  }
+  return undefined;
+}
+
 function generateState(): string {
   const array = new Uint8Array(32);
   crypto.getRandomValues(array);
@@ -43,12 +70,13 @@ export async function GET(request: NextRequest) {
 
   const response = NextResponse.redirect(authUrl);
 
-  const isSecure = request.nextUrl.protocol === "https:";
+  const isSecure = process.env.NODE_ENV === "production" || request.nextUrl.protocol === "https:";
   const cookieOptions = {
     path: "/",
     maxAge: OAUTH_COOKIE_MAX_AGE,
     sameSite: "lax" as const,
     secure: isSecure,
+    domain: getCookieDomain(),
   };
 
   response.cookies.set(AUTH_COOKIES.OAUTH_STATE, state, cookieOptions);
