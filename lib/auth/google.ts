@@ -34,6 +34,10 @@ export function signInWithGoogle(customReturnUrl?: string): void {
 
   // Handle auth success via postMessage (works on mobile)
   const handleMessage = (event: MessageEvent) => {
+    // Validate origin to prevent malicious websites from faking auth success
+    if (event.origin !== window.location.origin) {
+      return;
+    }
     if (event.data?.type === "AUTH_SUCCESS") {
       clearUserCache();
       cleanupAuthListeners();

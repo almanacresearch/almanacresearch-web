@@ -46,7 +46,12 @@ export async function GET(request: NextRequest) {
 
   // Get return URL (stored before redirect to Google)
   const returnUrl = request.cookies.get(AUTH_COOKIES.OAUTH_RETURN_URL)?.value;
-  const redirectPath = returnUrl ? decodeURIComponent(returnUrl) : "/";
+  const decodedReturnUrl = returnUrl ? decodeURIComponent(returnUrl) : "/";
+  
+  // Validate returnUrl to prevent open redirect attacks
+  // Must start with / and not be a protocol-relative URL (//)
+  const isValidReturnUrl = decodedReturnUrl.startsWith("/") && !decodedReturnUrl.startsWith("//");
+  const redirectPath = isValidReturnUrl ? decodedReturnUrl : "/";
 
   const redirectUri = `${request.nextUrl.origin}/api/auth/callback/google`;
 
@@ -168,7 +173,7 @@ export async function GET(request: NextRequest) {
             // Notify parent window of successful auth
             if (window.opener) {
               try {
-                window.opener.postMessage({ type: "AUTH_SUCCESS" }, "*");
+                window.opener.postMessage({ type: "AUTH_SUCCESS" }, window.location.origin);
               } catch (e) {}
               setTimeout(function() {
                 window.close();
