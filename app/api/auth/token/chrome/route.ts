@@ -76,7 +76,8 @@ export async function GET(request: NextRequest) {
   });
 
   // Redirect to chromiumapp.org with token - launchWebAuthFlow will capture this
-  const callbackUrl = `${redirectUri}?token=${token}`;
+  // URL-encode the token to handle special characters like + in base64
+  const callbackUrl = `${redirectUri}?token=${encodeURIComponent(token)}`;
 
   return NextResponse.redirect(callbackUrl);
 }

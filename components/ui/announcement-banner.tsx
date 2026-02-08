@@ -12,7 +12,6 @@ export function AnnouncementBanner({ message }: AnnouncementBannerProps) {
   const [isVisible, setIsVisible] = useState(true);
   const bannerRef = useRef<HTMLDivElement>(null);
 
-  // Set CSS variable for navbar position based on banner height (only when mounted/resized, not on scroll)
   useEffect(() => {
     const updateBannerHeight = () => {
       if (bannerRef.current && isVisible) {

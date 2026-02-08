@@ -49,6 +49,7 @@ export async function GET(request: NextRequest) {
     maxAge: OAUTH_COOKIE_MAX_AGE,
     sameSite: "lax" as const,
     secure: isSecure,
+    httpOnly: true, // Prevent XSS access to OAuth state
   };
 
   response.cookies.set(AUTH_COOKIES.OAUTH_STATE, state, cookieOptions);

@@ -110,6 +110,11 @@ export function clearAllAuthCookies(response: NextResponse): void {
 }
 
 export function clearOAuthCookies(response: NextResponse): void {
-  response.cookies.delete(AUTH_COOKIES.OAUTH_STATE);
-  response.cookies.delete(AUTH_COOKIES.OAUTH_RETURN_URL);
+  // Use same options as when cookies were set to ensure proper deletion
+  const clearOptions = {
+    path: "/",
+    maxAge: 0,
+  };
+  response.cookies.set(AUTH_COOKIES.OAUTH_STATE, "", clearOptions);
+  response.cookies.set(AUTH_COOKIES.OAUTH_RETURN_URL, "", clearOptions);
 }

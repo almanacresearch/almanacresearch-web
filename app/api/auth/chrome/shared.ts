@@ -33,6 +33,7 @@ export async function handleChromeAuth(
 ): Promise<NextResponse> {
   const redirectUri = request.nextUrl.searchParams.get("redirect_uri");
   const promptParam = request.nextUrl.searchParams.get("prompt");
+  const loginHintParam = request.nextUrl.searchParams.get("login_hint");
 
   // Validate redirect_uri - must be a chromiumapp.org URL
   if (!redirectUri || !redirectUri.includes(".chromiumapp.org")) {
@@ -90,22 +91,27 @@ export async function handleChromeAuth(
   // Only show account picker if user explicitly wants different account
   if (promptParam === "select_account") {
     params.set("prompt", "select_account");
-  } else if (userEmail) {
-    // User has existing session - pre-select their account to skip account picker
-    // This is useful when requesting additional scopes (Gmail/Calendar)
-    params.set("login_hint", userEmail);
+  } else {
+    // Force consent to ensure we get a refresh_token.
+    params.set("prompt", "consent");
+  }
+  if (userEmail || loginHintParam) {
+    params.set("login_hint", userEmail || loginHintParam!);
   }
 
   const authUrl = `${GOOGLE_AUTH_URL}?${params.toString()}`;
 
   const response = NextResponse.redirect(authUrl);
 
-  const isSecure = request.nextUrl.protocol === "https:";
+  // Chrome's launchWebAuthFlow uses an isolated browser context.
+  // Cookies must use sameSite: "none" with secure: true to survive
+  // the cross-origin redirect chain (our domain → Google → our domain).
   const cookieOptions = {
     path: "/",
     maxAge: OAUTH_COOKIE_MAX_AGE,
-    sameSite: "lax" as const,
-    secure: isSecure,
+    sameSite: "none" as const,
+    secure: true, // Required when sameSite is "none"
+    httpOnly: true, // Prevent XSS access to OAuth state
   };
 
   // Store state and return URL for callback

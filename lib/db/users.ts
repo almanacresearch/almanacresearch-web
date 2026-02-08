@@ -144,12 +144,14 @@ async function upsertOAuthTokens(
     .eq("provider", oauthProvider)
     .single();
 
-  const tokenData = {
+  const tokenData: Record<string, unknown> = {
     access_token_enc: encrypt(tokens.access_token),
-    refresh_token_enc: encrypt(tokens.refresh_token),
     scopes: tokens.scopes || [],
     expires_at: tokens.expiry?.toISOString(),
   };
+  if (tokens.refresh_token) {
+    tokenData.refresh_token_enc = encrypt(tokens.refresh_token);
+  }
 
   if (existing) {
     const { error } = await supabase
@@ -161,6 +163,11 @@ async function upsertOAuthTokens(
       throw new Error("oauth_token_update_failed");
     }
   } else {
+    // For new tokens, we need refresh_token - if not provided, store empty
+    if (!tokenData.refresh_token_enc) {
+      tokenData.refresh_token_enc = encrypt(tokens.refresh_token || "");
+    }
+    
     const { error } = await supabase.from("oauth_tokens").insert({
       user_id: userId,
       provider: oauthProvider,
