@@ -81,3 +81,74 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.redirect(callbackUrl);
 }
+
+/**
+ * Refresh extension token
+ * POST /api/auth/token/chrome
+ * Authorization: Bearer <existing-extension-token>
+ *
+ * Returns a fresh JWT with current user data from DB.
+ * Used by the extension to sync local state
+ */
+export async function POST(request: NextRequest) {
+  if (!EXTENSION_TOKEN_SECRET) {
+    return NextResponse.json(
+      { error: "Extension not configured" },
+      { status: 500 }
+    );
+  }
+
+  const authHeader = request.headers.get("authorization");
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return NextResponse.json(
+      { error: "Missing authorization" },
+      { status: 401 }
+    );
+  }
+
+  const existingToken = authHeader.slice(7);
+
+  let payload: { userId?: string };
+  try {
+    payload = jwt.verify(existingToken, EXTENSION_TOKEN_SECRET, {
+      algorithms: ["HS256"],
+    }) as { userId?: string };
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid or expired token" },
+      { status: 401 }
+    );
+  }
+
+  if (!payload.userId) {
+    return NextResponse.json(
+      { error: "Invalid token payload" },
+      { status: 401 }
+    );
+  }
+
+  const dbUser = await getUserById(payload.userId);
+  if (!dbUser) {
+    return NextResponse.json(
+      { error: "User not found" },
+      { status: 404 }
+    );
+  }
+
+  const hasScopes = await hasRequiredChromeScopes(payload.userId);
+
+  const issuer =
+    process.env.NEXT_PUBLIC_BASE_URL || "https://www.almanacresearch.com";
+
+  const token = createExtensionToken({
+    userId: dbUser.id,
+    email: dbUser.primary_email,
+    name: dbUser.name,
+    picture: dbUser.picture,
+    invited: dbUser.invited,
+    hasScopes: hasScopes,
+    iss: issuer,
+  });
+
+  return NextResponse.json({ token });
+}

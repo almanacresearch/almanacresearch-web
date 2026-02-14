@@ -92,8 +92,10 @@ export async function GET(request: NextRequest) {
     const grantedScopes = tokens.scope?.split(" ") || [];
     const hasGmailAccess = grantedScopes.includes(GMAIL_SCOPE);
     if (hasGmailAccess) {
-      triggerNewUserQueue(dbUser.id);
-      startGmailWatch(dbUser.id, tokens.access_token);
+      await Promise.all([
+        triggerNewUserQueue(dbUser.id),
+        startGmailWatch(dbUser.id, tokens.access_token),
+      ]);
     }
 
     const isChromeExtensionFlow = redirectPath.includes("/api/auth/token/chrome");
