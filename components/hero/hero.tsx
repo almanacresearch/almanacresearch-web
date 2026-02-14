@@ -65,7 +65,7 @@ export function Hero() {
                 AlmanacAI
               </h1>
               <p className="text-base sm:text-lg md:text-xl text-amber-50/80">
-                {"Powered Execution".split("").map((char, index) => (
+                {"Invite only".split("").map((char, index) => (
                   <motion.span
                     key={index}
                     initial={{ opacity: 0 }}
