@@ -139,21 +139,33 @@ async function upsertOAuthTokens(
 
   const { data: existing } = await supabase
     .from("oauth_tokens")
-    .select("id")
+    .select("id, scopes")
     .eq("user_id", userId)
     .eq("provider", oauthProvider)
     .single();
 
-  const tokenData: Record<string, unknown> = {
-    access_token_enc: encrypt(tokens.access_token),
-    scopes: tokens.scopes || [],
-    expires_at: tokens.expiry?.toISOString(),
-  };
-  if (tokens.refresh_token) {
-    tokenData.refresh_token_enc = encrypt(tokens.refresh_token);
-  }
-
   if (existing) {
+    // Merge scopes: keep existing scopes and add any new ones
+    const existingScopes: string[] = existing.scopes || [];
+    const newScopes: string[] = tokens.scopes || [];
+    const mergedScopes = [...new Set([...existingScopes, ...newScopes])];
+
+    // Only update access_token if the new token has all existing scopes
+    const hasAllExistingScopes = existingScopes.every(s => newScopes.includes(s));
+
+    const tokenData: Record<string, unknown> = {
+      scopes: mergedScopes,
+    };
+
+    if (hasAllExistingScopes) {
+      tokenData.access_token_enc = encrypt(tokens.access_token);
+      tokenData.expires_at = tokens.expiry?.toISOString();
+    }
+
+    if (tokens.refresh_token) {
+      tokenData.refresh_token_enc = encrypt(tokens.refresh_token);
+    }
+
     const { error } = await supabase
       .from("oauth_tokens")
       .update(tokenData)
@@ -163,9 +175,16 @@ async function upsertOAuthTokens(
       throw new Error("oauth_token_update_failed");
     }
   } else {
-    // For new tokens, we need refresh_token - if not provided, store empty
-    if (!tokenData.refresh_token_enc) {
-      tokenData.refresh_token_enc = encrypt(tokens.refresh_token || "");
+    const tokenData: Record<string, unknown> = {
+      access_token_enc: encrypt(tokens.access_token),
+      scopes: tokens.scopes || [],
+      expires_at: tokens.expiry?.toISOString(),
+    };
+
+    if (tokens.refresh_token) {
+      tokenData.refresh_token_enc = encrypt(tokens.refresh_token);
+    } else {
+      tokenData.refresh_token_enc = encrypt("");
     }
     
     const { error } = await supabase.from("oauth_tokens").insert({
