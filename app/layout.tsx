@@ -19,9 +19,31 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const SITE_URL = "https://www.almanacresearch.com";
+
 export const metadata: Metadata = {
-  title: "Almanac Research",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Almanac Research",
+    template: "%s | Almanac Research",
+  },
   description: "Almanac Research",
+  openGraph: {
+    title: "Almanac Research",
+    description: "Almanac Research",
+    url: SITE_URL,
+    siteName: "Almanac Research",
+    images: [
+      {
+        url: "/images/og-almanacresearch.png",
+        width: 1200,
+        height: 630,
+        alt: "Almanac Research",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
 };
 
 export default async function RootLayout({
