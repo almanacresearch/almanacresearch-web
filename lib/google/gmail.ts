@@ -10,14 +10,14 @@ export interface GmailWatchResponse {
 
 /**
  * Start watching a user's Gmail inbox for changes.
- * Stores watch info in google_push_notification table.
+ * Stores watch info in gmail_watch_subscription table.
  * 
- * @param userId - User's database ID
+ * @param connectedAccountId - Connected account's database ID
  * @param accessToken - User's Gmail access token
  * @returns Watch response with historyId, or null on failure
  */
 export async function startGmailWatch(
-  userId: string,
+  connectedAccountId: string,
   accessToken: string
 ): Promise<GmailWatchResponse | null> {
   try {
@@ -50,7 +50,7 @@ export async function startGmailWatch(
     );
 
     // Store watch info in database
-    await upsertGmailWatch(userId, data.historyId, expirationDate);
+    await upsertGmailWatch(connectedAccountId, data.historyId, expirationDate);
 
     return data;
   } catch (error) {

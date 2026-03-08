@@ -8,7 +8,10 @@ export const AUTH_COOKIES = {
   AUTH_PROVIDER: "auth_provider",
   OAUTH_STATE: "oauth_state",
   OAUTH_RETURN_URL: "oauth_return_url",
+  OAUTH_FLOW: "oauth_flow",
 } as const;
+
+export type OAuthFlow = "signin" | "connect";
 
 // Cookie TTLs
 export const SESSION_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
@@ -117,4 +120,5 @@ export function clearOAuthCookies(response: NextResponse): void {
   };
   response.cookies.set(AUTH_COOKIES.OAUTH_STATE, "", clearOptions);
   response.cookies.set(AUTH_COOKIES.OAUTH_RETURN_URL, "", clearOptions);
+  response.cookies.set(AUTH_COOKIES.OAUTH_FLOW, "", clearOptions);
 }

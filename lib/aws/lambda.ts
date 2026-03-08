@@ -1,13 +1,15 @@
-const NEW_USER_ENQUEUE_URL =
+const ENQUEUE_URL =
   "https://zbobxxvq45.execute-api.ap-south-1.amazonaws.com/dev/enqueue/new-user";
 
-export async function triggerNewUserQueue(userId: string): Promise<void> {
+export async function triggerSyncQueue(
+  connectedAccountId: string
+): Promise<void> {
   const payload = {
-    user_id: userId,
+    connected_account_id: connectedAccountId,
   };
 
   try {
-    const response = await fetch(NEW_USER_ENQUEUE_URL, {
+    const response = await fetch(ENQUEUE_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -17,11 +19,11 @@ export async function triggerNewUserQueue(userId: string): Promise<void> {
 
     if (!response.ok) {
       console.error(
-        `Failed to enqueue new user: ${response.status} ${response.statusText}`
+        `Failed to enqueue sync: ${response.status} ${response.statusText}`
       );
       return;
     }
   } catch (error) {
-    console.error("Failed to trigger new user queue:", error);
+    console.error("Failed to trigger sync queue:", error);
   }
 }

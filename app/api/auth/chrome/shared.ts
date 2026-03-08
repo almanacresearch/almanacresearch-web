@@ -121,6 +121,7 @@ export async function handleChromeAuth(
     encodeURIComponent(returnUrl),
     cookieOptions
   );
+  response.cookies.set(AUTH_COOKIES.OAUTH_FLOW, "signin", cookieOptions);
 
   return response;
 }
