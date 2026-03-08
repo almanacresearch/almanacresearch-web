@@ -27,17 +27,42 @@ export function cleanupAuthListeners(): void {
 }
 
 export function signInWithGoogle(customReturnUrl?: string): void {
+  const returnUrl = encodeURIComponent(customReturnUrl || window.location.href);
+  openAuthPopup(`/api/auth/google?returnUrl=${returnUrl}`, "google-auth");
+}
+
+/**
+ * Open a popup to connect an additional Google account.
+ * The user must already be signed in. The callback will link the new
+ * Google account to the existing user instead of creating a new one.
+ *
+ * @param options.scopes - Pass "gmail" to request Gmail + Calendar scopes
+ * @param options.returnUrl - URL to redirect to after connecting
+ */
+export function connectGoogleAccount(options?: {
+  scopes?: "gmail";
+  returnUrl?: string;
+}): void {
+  const returnUrl = encodeURIComponent(
+    options?.returnUrl || window.location.href,
+  );
+
+  let authUrl = `/api/auth/google?flow=connect&returnUrl=${returnUrl}`;
+  if (options?.scopes) {
+    authUrl += `&scopes=${options.scopes}`;
+  }
+
+  openAuthPopup(authUrl, "google-connect");
+}
+
+/**
+ * Shared popup helper
+ */
+function openAuthPopup(url: string, popupName: string): void {
   cleanupAuthListeners();
 
-  // Store current URL so callback can redirect back
-  const returnUrl = encodeURIComponent(customReturnUrl || window.location.href);
-
-  // Handle auth success via postMessage (works on mobile)
   const handleMessage = (event: MessageEvent) => {
-    // Validate origin to prevent malicious websites from faking auth success
-    if (event.origin !== window.location.origin) {
-      return;
-    }
+    if (event.origin !== window.location.origin) return;
     if (event.data?.type === "AUTH_SUCCESS") {
       clearUserCache();
       cleanupAuthListeners();
@@ -45,7 +70,6 @@ export function signInWithGoogle(customReturnUrl?: string): void {
     }
   };
 
-  // Fallback: Also check on focus (for desktop popup close)
   const handleFocus = async () => {
     clearUserCache();
     const user = await getUser();
@@ -55,7 +79,6 @@ export function signInWithGoogle(customReturnUrl?: string): void {
     }
   };
 
-  // Fallback: Check on visibility change (for mobile tab switch)
   const handleVisibilityChange = async () => {
     if (document.visibilityState === "visible") {
       clearUserCache();
@@ -74,11 +97,9 @@ export function signInWithGoogle(customReturnUrl?: string): void {
   cleanupFunctions = [
     () => window.removeEventListener("message", handleMessage),
     () => window.removeEventListener("focus", handleFocus),
-    () => document.removeEventListener("visibilitychange", handleVisibilityChange),
+    () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange),
   ];
-
-  // Use server endpoint for OAuth initiation (single source of truth)
-  const authUrl = `/api/auth/google?returnUrl=${returnUrl}`;
 
   const width = 500;
   const height = 600;
@@ -86,8 +107,8 @@ export function signInWithGoogle(customReturnUrl?: string): void {
   const top = window.screenY + (window.outerHeight - height) / 2;
 
   window.open(
-    authUrl,
-    "google-auth",
-    `width=${width},height=${height},left=${left},top=${top},popup=yes`
+    url,
+    popupName,
+    `width=${width},height=${height},left=${left},top=${top},popup=yes`,
   );
 }

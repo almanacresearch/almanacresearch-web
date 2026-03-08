@@ -35,10 +35,14 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
   }
+
+  // Always look up connected account info from DB
+  const dbTokens = await getOAuthTokens(session.userId, providerName);
+  const connectedAccountId = dbTokens?.connectedAccountId;
+
   let refreshToken = request.cookies.get(AUTH_COOKIES.REFRESH_TOKEN)?.value;
-  
+
   if (!refreshToken) {
-    const dbTokens = await getOAuthTokens(session.userId, providerName);
     refreshToken = dbTokens?.refresh_token;
   }
 
@@ -65,8 +69,8 @@ export async function POST(request: NextRequest) {
     }
 
     const newRefreshToken = tokens.refresh_token;
-    if (newRefreshToken) {
-      await updateRefreshToken(session.userId, providerName, newRefreshToken);
+    if (newRefreshToken && connectedAccountId) {
+      await updateRefreshToken(connectedAccountId, newRefreshToken);
     }
     const newSessionToken = createSessionToken(dbUserToPublic(dbUser));
 

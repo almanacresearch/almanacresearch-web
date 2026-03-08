@@ -5,11 +5,6 @@ import type { UserDB } from "@/lib/auth/types";
 export type { UserDB };
 
 export type AuthProvider = "google"; // extendable for other providers
-export type OAuthProvider = "google_gmail";
-
-const authToOAuthProvider: Record<AuthProvider, OAuthProvider> = {
-  google: "google_gmail",
-};
 
 export interface AuthIdentity {
   provider: AuthProvider;
@@ -24,11 +19,26 @@ export interface OAuthTokens {
   expiry?: Date;
 }
 
+export interface ConnectedAccounts {
+  id: string;
+  user_id: string;
+  account_provider: AuthProvider;
+  account_identifier: string;
+  display_name: string | null;
+  scopes: string[];
+  created_at: string;
+  updated_at: string;
+}
+
 export async function findOrCreateUser(
   identity: AuthIdentity,
   profile: { name: string; picture?: string },
-  tokens: OAuthTokens
-): Promise<{ user: UserDB; isNewUser: boolean }> {
+  tokens: OAuthTokens,
+): Promise<{ user: UserDB; isNewUser: boolean; connectedAccountId: string }> {
+  const accountIdentifier = identity.email || identity.provider_user_id;
+  const newScopes = tokens.scopes || [];
+
+  // 1. Check if auth identity already exists
   const { data: existingIdentity } = await supabase
     .from("auth_identities")
     .select("user_id")
@@ -54,15 +64,20 @@ export async function findOrCreateUser(
       throw new Error("user_update_failed");
     }
 
-    await upsertOAuthTokens(
+    const { account, previousScopes } = await upsertConnectedAccount(
       existingIdentity.user_id,
       identity.provider,
-      tokens
+      accountIdentifier,
+      profile.name,
+      newScopes,
     );
 
-    return { user, isNewUser: false };
+    await upsertOAuthTokens(account.id, tokens, previousScopes);
+
+    return { user, isNewUser: false, connectedAccountId: account.id };
   }
 
+  // 2. Check if a user with the same primary email exists
   if (identity.email) {
     const { data: existingUserByEmail } = await supabase
       .from("users")
@@ -72,11 +87,16 @@ export async function findOrCreateUser(
 
     if (existingUserByEmail) {
       await createAuthIdentity(existingUserByEmail.id, identity);
-      await upsertOAuthTokens(
+
+      const { account, previousScopes } = await upsertConnectedAccount(
         existingUserByEmail.id,
         identity.provider,
-        tokens
+        accountIdentifier,
+        profile.name,
+        newScopes,
       );
+
+      await upsertOAuthTokens(account.id, tokens, previousScopes);
 
       const now = new Date().toISOString();
       await supabase
@@ -87,10 +107,15 @@ export async function findOrCreateUser(
         })
         .eq("id", existingUserByEmail.id);
 
-      return { user: existingUserByEmail, isNewUser: false };
+      return {
+        user: existingUserByEmail,
+        isNewUser: false,
+        connectedAccountId: account.id,
+      };
     }
   }
 
+  // 3. Create a brand-new user
   const { data: newUser, error: createError } = await supabase
     .from("users")
     .insert({
@@ -109,14 +134,22 @@ export async function findOrCreateUser(
 
   await createAuthIdentity(newUser.id, identity);
 
-  await upsertOAuthTokens(newUser.id, identity.provider, tokens);
+  const { account } = await upsertConnectedAccount(
+    newUser.id,
+    identity.provider,
+    accountIdentifier,
+    profile.name,
+    newScopes,
+  );
 
-  return { user: newUser, isNewUser: true };
+  await upsertOAuthTokens(account.id, tokens, []);
+
+  return { user: newUser, isNewUser: true, connectedAccountId: account.id };
 }
 
 async function createAuthIdentity(
   userId: string,
-  identity: AuthIdentity
+  identity: AuthIdentity,
 ): Promise<void> {
   const { error } = await supabase.from("auth_identities").insert({
     user_id: userId,
@@ -130,34 +163,91 @@ async function createAuthIdentity(
   }
 }
 
-async function upsertOAuthTokens(
+// ---------------------------------------------------------------------------
+// Connected accounts
+// ---------------------------------------------------------------------------
+
+async function upsertConnectedAccount(
   userId: string,
   provider: AuthProvider,
-  tokens: OAuthTokens
-): Promise<void> {
-  const oauthProvider = authToOAuthProvider[provider];
-
+  accountIdentifier: string,
+  displayName: string,
+  newScopes: string[],
+): Promise<{ account: ConnectedAccounts; previousScopes: string[] }> {
   const { data: existing } = await supabase
-    .from("oauth_tokens")
-    .select("id, scopes")
+    .from("connected_accounts")
+    .select("*")
     .eq("user_id", userId)
-    .eq("provider", oauthProvider)
+    .eq("account_provider", provider)
+    .eq("account_identifier", accountIdentifier)
     .single();
 
   if (existing) {
-    // Merge scopes: keep existing scopes and add any new ones
-    const existingScopes: string[] = existing.scopes || [];
-    const newScopes: string[] = tokens.scopes || [];
-    const mergedScopes = [...new Set([...existingScopes, ...newScopes])];
+    const previousScopes: string[] = existing.scopes || [];
+    const mergedScopes = [...new Set([...previousScopes, ...newScopes])];
 
-    // Only update access_token if the new token has all existing scopes
-    const hasAllExistingScopes = existingScopes.every(s => newScopes.includes(s));
+    const { data: updated, error } = await supabase
+      .from("connected_accounts")
+      .update({
+        display_name: displayName,
+        scopes: mergedScopes,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", existing.id)
+      .select()
+      .single();
 
-    const tokenData: Record<string, unknown> = {
-      scopes: mergedScopes,
-    };
+    if (error) {
+      throw new Error("connected_account_update_failed");
+    }
 
-    if (hasAllExistingScopes) {
+    return { account: updated, previousScopes };
+  }
+
+  const { data: newAccount, error } = await supabase
+    .from("connected_accounts")
+    .insert({
+      user_id: userId,
+      account_provider: provider,
+      account_identifier: accountIdentifier,
+      display_name: displayName,
+      scopes: newScopes,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error("connected_account_creation_failed");
+  }
+
+  return { account: newAccount, previousScopes: [] };
+}
+
+// ---------------------------------------------------------------------------
+// OAuth tokens  (keyed by connected_account_id)
+// ---------------------------------------------------------------------------
+
+async function upsertOAuthTokens(
+  connectedAccountId: string,
+  tokens: OAuthTokens,
+  previousScopes: string[],
+): Promise<void> {
+  const newScopes = tokens.scopes || [];
+  // Only overwrite access_token when the new token covers all previously-granted scopes
+  const hasAllPreviousScopes =
+    previousScopes.length === 0 ||
+    previousScopes.every((s) => newScopes.includes(s));
+
+  const { data: existing } = await supabase
+    .from("oauth_tokens")
+    .select("connected_account_id")
+    .eq("connected_account_id", connectedAccountId)
+    .single();
+
+  if (existing) {
+    const tokenData: Record<string, unknown> = {};
+
+    if (hasAllPreviousScopes) {
       tokenData.access_token_enc = encrypt(tokens.access_token);
       tokenData.expires_at = tokens.expiry?.toISOString();
     }
@@ -166,31 +256,24 @@ async function upsertOAuthTokens(
       tokenData.refresh_token_enc = encrypt(tokens.refresh_token);
     }
 
-    const { error } = await supabase
-      .from("oauth_tokens")
-      .update(tokenData)
-      .eq("id", existing.id);
+    if (Object.keys(tokenData).length > 0) {
+      const { error } = await supabase
+        .from("oauth_tokens")
+        .update(tokenData)
+        .eq("connected_account_id", connectedAccountId);
 
-    if (error) {
-      throw new Error("oauth_token_update_failed");
+      if (error) {
+        throw new Error("oauth_token_update_failed");
+      }
     }
   } else {
-    const tokenData: Record<string, unknown> = {
-      access_token_enc: encrypt(tokens.access_token),
-      scopes: tokens.scopes || [],
-      expires_at: tokens.expiry?.toISOString(),
-    };
-
-    if (tokens.refresh_token) {
-      tokenData.refresh_token_enc = encrypt(tokens.refresh_token);
-    } else {
-      tokenData.refresh_token_enc = encrypt("");
-    }
-    
     const { error } = await supabase.from("oauth_tokens").insert({
-      user_id: userId,
-      provider: oauthProvider,
-      ...tokenData,
+      connected_account_id: connectedAccountId,
+      access_token_enc: encrypt(tokens.access_token),
+      refresh_token_enc: tokens.refresh_token
+        ? encrypt(tokens.refresh_token)
+        : encrypt(""),
+      expires_at: tokens.expiry?.toISOString(),
     });
 
     if (error) {
@@ -216,46 +299,59 @@ export async function getUserById(userId: string): Promise<UserDB | null> {
   return data;
 }
 
+/**
+ * Get decrypted OAuth tokens for a user's first connected account of the given provider.
+ * Returns the connected_account_id alongside the tokens so callers can update later.
+ */
 export async function getOAuthTokens(
   userId: string,
-  provider: AuthProvider
-): Promise<{ access_token: string; refresh_token: string } | null> {
-  const oauthProvider = authToOAuthProvider[provider];
+  provider: AuthProvider,
+): Promise<{
+  access_token: string;
+  refresh_token: string;
+  connectedAccountId: string;
+} | null> {
+  const { data: connectedAccount, error: caError } = await supabase
+    .from("connected_accounts")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("account_provider", provider)
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .single();
+
+  if (caError || !connectedAccount) {
+    return null;
+  }
 
   const { data, error } = await supabase
     .from("oauth_tokens")
     .select("access_token_enc, refresh_token_enc")
-    .eq("user_id", userId)
-    .eq("provider", oauthProvider)
+    .eq("connected_account_id", connectedAccount.id)
     .single();
 
-  if (error) {
-    if (error.code !== "PGRST116") {
-      // Non-standard error occurred
-    }
+  if (error || !data) {
     return null;
   }
 
-  return data
-    ? {
-        access_token: decrypt(data.access_token_enc),
-        refresh_token: decrypt(data.refresh_token_enc),
-      }
-    : null;
+  return {
+    access_token: decrypt(data.access_token_enc),
+    refresh_token: decrypt(data.refresh_token_enc),
+    connectedAccountId: connectedAccount.id,
+  };
 }
 
+/**
+ * Update the refresh token for a specific connected account.
+ */
 export async function updateRefreshToken(
-  userId: string,
-  provider: AuthProvider,
-  newRefreshToken: string
+  connectedAccountId: string,
+  newRefreshToken: string,
 ): Promise<void> {
-  const oauthProvider = authToOAuthProvider[provider];
-
   const { error } = await supabase
     .from("oauth_tokens")
     .update({ refresh_token_enc: encrypt(newRefreshToken) })
-    .eq("user_id", userId)
-    .eq("provider", oauthProvider);
+    .eq("connected_account_id", connectedAccountId);
 
   if (error) {
     throw new Error("refresh_token_update_failed");
@@ -263,17 +359,26 @@ export async function updateRefreshToken(
 }
 
 export async function deleteUserAccount(
-  userId: string
+  userId: string,
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    await supabase.from("oauth_tokens").delete().eq("user_id", userId);
-    await supabase.from("auth_identities").delete().eq("user_id", userId);
-
-    await supabase
-      .from("invite_codes")
-      .update({ user_id: null, used_at: null })
+    // Delete oauth_tokens via connected_accounts (no CASCADE on that FK)
+    const { data: connectedAccounts } = await supabase
+      .from("connected_accounts")
+      .select("id")
       .eq("user_id", userId);
 
+    if (connectedAccounts && connectedAccounts.length > 0) {
+      const accountIds = connectedAccounts.map((ca) => ca.id);
+      await supabase
+        .from("oauth_tokens")
+        .delete()
+        .in("connected_account_id", accountIds);
+    }
+
+    // Deleting the user cascades to:
+    //   auth_identities, connected_accounts
+    //   -> gmail_ingestion_state, gmail_watch_subscription (via connected_accounts cascade)
     const { error } = await supabase.from("users").delete().eq("id", userId);
 
     if (error) {
@@ -286,46 +391,92 @@ export async function deleteUserAccount(
   }
 }
 
-export async function hasRequiredChromeScopes(userId: string): Promise<boolean> {
+export async function hasRequiredChromeScopes(
+  userId: string,
+): Promise<boolean> {
   const requiredScopes = [
     "https://www.googleapis.com/auth/gmail.readonly",
     "https://www.googleapis.com/auth/calendar.readonly",
   ];
 
   const { data, error } = await supabase
-    .from("oauth_tokens")
+    .from("connected_accounts")
     .select("scopes")
     .eq("user_id", userId)
-    .eq("provider", "google_gmail")
-    .single();
+    .eq("account_provider", "google");
 
-  if (error || !data) {
+  if (error || !data || data.length === 0) {
     return false;
   }
 
-  const userScopes = data.scopes || [];
-  return requiredScopes.every((scope) => userScopes.includes(scope));
+  // True if any connected account has all required scopes
+  return data.some((account) => {
+    const accountScopes: string[] = account.scopes || [];
+    return requiredScopes.every((scope) => accountScopes.includes(scope));
+  });
+}
+
+/**
+ * Link a new Google account to an existing (already signed-in) user.
+ * Creates the auth_identity, connected_account, and oauth_tokens rows.
+ * If the Google identity is already linked to a *different* user, throws.
+ */
+export async function linkConnectedAccount(
+  userId: string,
+  identity: AuthIdentity,
+  profile: { name: string; picture?: string },
+  tokens: OAuthTokens,
+): Promise<{ connectedAccountId: string }> {
+  const accountIdentifier = identity.email || identity.provider_user_id;
+  const newScopes = tokens.scopes || [];
+
+  // Guard: if this Google identity already belongs to another user, reject
+  const { data: existingIdentity } = await supabase
+    .from("auth_identities")
+    .select("user_id")
+    .eq("provider", identity.provider)
+    .eq("provider_user_id", identity.provider_user_id)
+    .single();
+
+  if (existingIdentity && existingIdentity.user_id !== userId) {
+    throw new Error("account_already_linked_to_another_user");
+  }
+
+  // Create auth_identity if it doesn't exist yet for this user
+  if (!existingIdentity) {
+    await createAuthIdentity(userId, identity);
+  }
+
+  const { account, previousScopes } = await upsertConnectedAccount(
+    userId,
+    identity.provider,
+    accountIdentifier,
+    profile.name,
+    newScopes,
+  );
+
+  await upsertOAuthTokens(account.id, tokens, previousScopes);
+
+  return { connectedAccountId: account.id };
 }
 
 export async function upsertGmailWatch(
-  userId: string,
+  connectedAccountId: string,
   historyId: string,
-  expiration: Date
+  expiration: Date,
 ): Promise<boolean> {
   const watchStartedAt = new Date().toISOString();
   const watchExpiration = expiration.toISOString();
 
-  const { error } = await supabase
-    .from("google_push_notification")
-    .upsert(
-      {
-        user_id: userId,
-        history_id: historyId,
-        watch_started_at: watchStartedAt,
-        watch_expiration: watchExpiration,
-      },
-      { onConflict: "user_id" }
-    );
+  const { error } = await supabase.from("gmail_watch_subscription").upsert(
+    {
+      connected_account_id: connectedAccountId,
+      history_id: historyId,
+      watch_started_at: watchStartedAt,
+      watch_expiration: watchExpiration,
+    },
+    { onConflict: "connected_account_id" },
+  );
 
   if (error) {
     console.error("Failed to store Gmail watch info:", error);

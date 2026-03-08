@@ -2,6 +2,7 @@
 
 export {
   signInWithGoogle,
+  connectGoogleAccount,
   onAuthSuccess,
   cleanupAuthListeners,
 } from "./google";
